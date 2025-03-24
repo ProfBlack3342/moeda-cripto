@@ -14,14 +14,14 @@ const MYSQL_CREDENTIALS = {
 };
 const SERVER_PATH_PAGES = {
     contact: '/api/contact',
-    home: '/api/home',
+    home: '/api',
     login: '/api/login',
     register: '/api/register',
     profile: '/api/profile'
 };
 const SERVER_PATH_DB_USER = {
-    registrar: '/db/user/create',
-    login: '/db/user/read',
+    criar: '/db/user/create',
+    ler: '/db/user/read',
     atualizar: '/db/user/update',
     excluir: '/db/user/delete'
 };
@@ -73,7 +73,7 @@ db.connect((err) => {
 //// Comandos MySQL
 
 // Registrar um Usuário Novo
-server.post(SERVER_PATH_DB_USER.user, (req, res) => {
+server.post(SERVER_PATH_DB_USER.criar, (req, res) => {
 
     const {login, senha, nome, cpf, email} = req.body;
 
@@ -100,7 +100,7 @@ server.post(SERVER_PATH_DB_USER.user, (req, res) => {
 });
 
 // Login
-server.post(SERVER_PATH_DB_USER.user, (req, res) => {
+server.post(SERVER_PATH_DB_USER.ler, (req, res) => {
     const {login, senha} = req.body;
 
     if(!login || senha)
@@ -128,7 +128,7 @@ server.post(SERVER_PATH_DB_USER.user, (req, res) => {
 });
 
 // Listar Todos os Usuários Existentes
-server.get(SERVER_PATH_DB_USER.user, (req, res) => {
+server.get(SERVER_PATH_DB_USER.ler, (req, res) => {
 
     const QUERY = 'SELECT * FROM usuarios';
 
