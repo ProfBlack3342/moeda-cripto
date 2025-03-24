@@ -82,17 +82,13 @@ server.post(SERVER_PATH_DB_USER.criar, (req, res) => {
     const QUERY = 'INSERT INTO usuarios (loginUsuario, senhaUsuario, nomeUsuario, cpfUsuario, emailUsuario) VALUES (?, ?, ?, ?, ?)';
 
     db.query(QUERY, [login, senha, nome, cpf, email], async (err, results) => {
-        if(err) {
+        if(err)
             return res.status(500).send('Erro ao registrar o usuário no banco de dados.');
-        }
-            
         else {
-            if(results.affectedRows > 0) {
+            if(results.affectedRows > 0) 
                 res.json({ id: results.insertId, login, senha, nome, cpf, email});
-            }
-            else {
+            else 
                 return res.status(500).send('Erro ao inserir o usuário no banco de dados.');
-            }
         }
             
     });
@@ -108,21 +104,18 @@ server.post(SERVER_PATH_DB_USER.ler, (req, res) => {
     const QUERY1 = 'SELECT * FROM usuarios WHERE loginUsuario = ?';
 
     db.query(QUERY1, [login], async (err, results) => {
-        if(err) {
+        if(err)
             return res.status(500).send('Erro ao pesquisar o login no banco de dados.');
-        }
         else if(results.length > 0) {
             const isMatch = await bcrypt.compare(senha, results[0].senhaUsuario);
-            if(isMatch) {
+
+            if(isMatch) 
                 res.json({message: 'Login feito com sucesso.'});
-            }
-            else {
+            else 
                 return res.status(400).send('Senha incorreta.');
-            }
         }
-        else {
+        else
             return res.status(400).send('Usuário não encontrado.');
-        }
     });
 });
 
@@ -139,7 +132,7 @@ server.get(SERVER_PATH_DB_USER.ler, (req, res) => {
     });
 });
 
-//// Iniciar o servidor na porta 8000
+//// Iniciar o servidor na porta 5000
 server.listen(SERVER_PORT, () => {
     console.log(`Servidor backend rodando em http://localhost:${SERVER_PORT}`);
 });
