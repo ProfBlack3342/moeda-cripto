@@ -35,7 +35,7 @@ server.use(express.json());
 
 // Home
 server.get(SERVER_PATH_PAGES.home, (req, res) => {
-    res.json({ message: 'O Que é o Moeda Digital?' });
+    res.json({ message: 'O Que é o Moeda Cripto?' });
 });
 
 // Cadastro
