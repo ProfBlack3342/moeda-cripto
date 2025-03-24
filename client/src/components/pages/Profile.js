@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import { User } from '../Classes.js';
 
-const PORT = 8000;
+const SERVER_PORT = 5000;
 
 /**
  * 
@@ -18,7 +18,7 @@ function ProfilePage({currentUser, changeCurrentUser}) {
 
     useEffect(() => {
         // Requisição para a API do backend
-        axios.get(`http://localhost:${PORT}/api/profile`).then(response => setData(response.data)).catch(error => console.error('Erro ao buscar dados:', error));
+        axios.get(`http://localhost:${SERVER_PORT}/api/profile`).then(response => setData(response.data)).catch(error => console.error('Erro ao buscar dados:', error));
     }, []);
 
     return(
