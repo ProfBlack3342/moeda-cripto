@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-
 const mysql = require('mysql2');
 const bcrypt = require('bcrypt');
 const server = express();
@@ -16,14 +15,14 @@ const SERVER_PATH_PAGES = {
     contact: '/api/contact',
     home: '/api',
     login: '/api/login',
-    register: '/api/register',
-    profile: '/api/profile'
+    profile: '/api/profile',
+    register: '/api/register'
 };
 const SERVER_PATH_DB_USER = {
-    criar: '/db/user/create',
-    ler: '/db/user/read',
     atualizar: '/db/user/update',
-    excluir: '/db/user/delete'
+    criar: '/db/user/create',
+    excluir: '/db/user/delete',
+    ler: '/db/user/read'
 };
 
 //// Middleware para permitir requisições de diferentes origens (CORS)
