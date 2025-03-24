@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const PORT = 8000;
+const SERVER_PORT = 5000;
 
 function HomePage() {
 
@@ -9,7 +9,7 @@ function HomePage() {
 
     useEffect(() => {
         // Requisição para a API do backend
-        axios.get(`http://localhost:${PORT}/api`).then(response => setData(response.data)).catch(error => console.error('Erro ao buscar dados:', error));
+        axios.get(`http://localhost:${SERVER_PORT}/api`).then(response => setData(response.data)).catch(error => console.error('Erro ao buscar dados:', error));
     }, []);
 
     return(
@@ -17,7 +17,7 @@ function HomePage() {
             ? <>
                 <div className="w3-row w3-padding-64" id="about1">
                     <div className="w3-col m6 w3-padding-large w3-hide-small">
-                        <img src={require('../imgs/Bitcoin.png')} className="w3-round w3-image w3-opacity-min" alt="Bloco Gênesis Bitcoin" width="800" height="800"/>
+                        <img src={require('../../imgs/Bitcoin.png')} className="w3-round w3-image w3-opacity-min" alt="Bloco Gênesis Bitcoin" width="800" height="800"/>
                     </div>
                     <div className="w3-col m6 w3-padding-large">
                         <h3 className="w3-center">{data.message}</h3> 
@@ -54,7 +54,7 @@ function HomePage() {
                         </p>
                     </div>
                     <div className="w3-col l6 w3-padding-large">
-                        <img src={require('../imgs/Bitcoin.png')} className="w3-round w3-image w3-opacity-min" alt="Bloco Gênesis Bitcoin" width="800" height="800"/>
+                        <img src={require('../../imgs/Bitcoin.png')} className="w3-round w3-image w3-opacity-min" alt="Bloco Gênesis Bitcoin" width="800" height="800"/>
                     </div>
                 </div>
             </>
