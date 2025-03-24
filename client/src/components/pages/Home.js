@@ -25,6 +25,8 @@ function HomePage() {
                             O Moeda Digital é uma plataforma online para a introdução e o aprendizado do público Brasileiro sobre o conceito e o uso de Criptomoedas
                         </p>
 
+                        <hr/>
+
                         <h3 className="w3-center">Mas afinal, o que é uma Criptomoeda?</h3>
                         <p className="w3-large">
                             Uma criptomoeda ou cibermoeda é um meio de troca, geralmente descentralizado, 
@@ -44,6 +46,8 @@ function HomePage() {
                             Duis interdum libero vitae tortor auctor eleifend. Fusce eu mattis nisi. Vestibulum sagittis ullamcorper lacus, sit amet ornare tortor maximus non. 
                             Cras tempus faucibus enim, quis egestas purus porttitor non. Fusce vel egestas ligula, vitae consectetur ex. Nulla sollicitudin non lacus vel varius. 
                         </p>
+
+                        <hr/>
 
                         <h3 className="w3-center">In a fermentum felis, vel mattis mi?</h3>
                         <p className="w3-large">
