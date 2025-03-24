@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const PORT = 8000;
+const SERVER_PORT = 5000;
 
 function ContactPage() {
 
@@ -9,7 +9,7 @@ function ContactPage() {
 
     useEffect(() => {
         // Requisição para a API do backend
-        axios.get(`http://localhost:${PORT}/api/contact`).then(response => setData(response.data)).catch(error => console.error('Erro ao buscar dados:', error));
+        axios.get(`http://localhost:${SERVER_PORT}/api/contact`).then(response => setData(response.data)).catch(error => console.error('Erro ao buscar dados:', error));
     }, []);
 
     return(
