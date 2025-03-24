@@ -26,7 +26,7 @@ function TopoHTML({currentUser}) {
     <>
       <div className="w3-top">
         <div className="w3-bar w3-white w3-padding w3-card" style={{'letter-spacing':'4px'}}>
-          <a href="/" class="w3-bar-item w3-button">Moeda Digital</a>
+          <a href="/" class="w3-bar-item w3-button">Moeda Cripto</a>
           <div className="w3-right">
             <a href='/' className="w3-bar-item w3-button">Home</a>
             {currentUser === User
