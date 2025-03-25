@@ -18,7 +18,7 @@ import ContactPage from './components/pages/Contact';
  * 
  * @author Eduardo Pereira Moreira <eduardopereiramoreira1995@gmail.com>
  * @since 1.0
- * @version 1.0
+ * @version 1.1
  */
 function TopoHTML({currentUser}) {
 
@@ -57,7 +57,7 @@ function TopoHTML({currentUser}) {
  * 
  * @author Eduardo Pereira Moreira <eduardopereiramoreira1995@gmail.com>
  * @since 1.0
- * @version 1.0
+ * @version 1.1
  */
 function ConteudoHTML({currentUser, changeCurrentUser}) {
 
@@ -81,18 +81,19 @@ function ConteudoHTML({currentUser, changeCurrentUser}) {
  * 
  * @author Eduardo Pereira Moreira <eduardopereiramoreira1995@gmail.com>
  * @since 1.0
- * @version 1.0
+ * @version 1.1
  */
 function FooterHTML() {
   
   return (
-    <footer class="w3-center w3-orange w3-padding-32">
+    <footer className="w3-center w3-orange w3-padding-32">
       <div id="mapa">
         <h2>Localização</h2>
-          <iframe title="Localizacao" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d55261.302456100624!2d-51.23043050671742!3d-30.04169437567704!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x951978567f17f28d%3A0x2c2c5272bacf4d3a!2sSenac%20Tech!5e0!3m2!1spt-BR!2sbr!4v1724075560999!5m2!1spt-BR!2sbr"
+          <iframe className='w3-white w3-border w3-border-gray' title="Localizacao" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d55261.302456100624!2d-51.23043050671742!3d-30.04169437567704!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x951978567f17f28d%3A0x2c2c5272bacf4d3a!2sSenac%20Tech!5e0!3m2!1spt-BR!2sbr!4v1724075560999!5m2!1spt-BR!2sbr"
             width="400" height="300" style={{border:'0'}} allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
           </iframe>
       </div>
+
       <div id="redes">
           <h2>Redes Sociais</h2>
           <a href={"https://www.facebook.com/senacrsoficial"} target="_blank" rel="noreferrer noopener">
@@ -119,6 +120,7 @@ function FooterHTML() {
             </svg>
           </a>
       </div>
+
       {/* Link para voltar ao topo da página */}
       <div id="voltarTopo" className="w3-hover-text-green">
         <a href={"/#"}>- Voltar ao Topo -</a>
@@ -134,7 +136,7 @@ function FooterHTML() {
  * 
  * @author Eduardo Pereira Moreira <eduardopereiramoreira1995@gmail.com>
  * @since 1.0
- * @version 1.0
+ * @version 1.1
  */
 function App() {
 
@@ -150,7 +152,7 @@ function App() {
         <TopoHTML currentUser={currentUser}/>
       </div>
         
-      <div className='w3-topbar w3-white'>
+      <div className='w3-light-gray w3-topbar w3-bottombar w3-padding-64'>
         <ConteudoHTML currentUser={currentUser} setCurrentUser={changeCurrentUser}/>
       </div>
 
