@@ -3,6 +3,14 @@ import axios from 'axios';
 
 const SERVER_PORT = 5000;
 
+/**
+ * Gera e retorna um bloco de código HTML que define a página principal
+ * @returns 
+ * 
+ * @author Eduardo Pereira Moreira <eduardopereiramoreira1995@gmail.com>
+ * @since 1.0
+ * @version 1.0
+ */
 function HomePage() {
 
     const [data, setData] = useState(null);
@@ -15,9 +23,9 @@ function HomePage() {
     return(
         <> {data
             ? <>
-                <div className="w3-row w3-padding-64" id="about1">
+                <div className="w3-row w3-padding-64 w3-border-right" id="about1">
                     <div className="w3-col m6 w3-padding-large w3-hide-small">
-                        <img src={require('../../imgs/Bitcoin.png')} className="w3-round w3-image w3-opacity-min" alt="Bloco Gênesis Bitcoin" width="800" height="800"/>
+                        <img src={require('../../imgs/Bitcoin.png')} className="w3-border w3-padding w3-image w3-opacity-min" alt="Bloco Gênesis Bitcoin" width="800" height="800"/>
                     </div>
                     <div className="w3-col m6 w3-padding-large">
                         <h3 className="w3-center">{data.message}</h3> 
@@ -37,7 +45,7 @@ function HomePage() {
 
                 <hr/>
 
-                <div className="w3-row w3-padding-64" id="about2">
+                <div className="w3-row w3-padding-64 w3-border-left" id="about2">
                     <div className="w3-col l6 w3-padding-large">
                         <h3 className="w3-center">Vestibulum vulputate nulla laoreet risus varius ornare. ?</h3> 
                         <p className="w3-large">
@@ -58,9 +66,11 @@ function HomePage() {
                         </p>
                     </div>
                     <div className="w3-col l6 w3-padding-large">
-                        <img src={require('../../imgs/Bitcoin.png')} className="w3-round w3-image w3-opacity-min" alt="Bloco Gênesis Bitcoin" width="800" height="800"/>
+                        <img src={require('../../imgs/Bitcoin.png')} className="w3-border w3-padding w3-image w3-opacity-min" alt="Bloco Gênesis Bitcoin" width="800" height="800"/>
                     </div>
                 </div>
+
+                <hr/>
             </>
             : <h2 className="w3-center">Carregando Página...</h2>
         } </>
