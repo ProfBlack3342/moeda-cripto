@@ -6,11 +6,15 @@ import { User } from '../Classes.js';
 const SERVER_PORT = 5000;
 
 /**
- * 
+ * Gera e retorna um bloco de código HTML que define a página de login
  * @param {Object} userState - Um objeto contendo:
  * @param {User | null} userState.currentUser - O usuário atualmente logado, ou nulo se não estiver.
  * @param {Function} userState.changeCurrentUser - A função que altera o usuário logado atualmente.
  * @returns Uma página HTML para fazer login em um usuário existente
+ * 
+ * @author Eduardo Pereira Moreira <eduardopereiramoreira1995@gmail.com>
+ * @since 1.0
+ * @version 1.0
  */
 function LoginPage({currentUser, changeCurrentUser}) {
 
