@@ -1,2 +1,4 @@
 /client/node_modules/.cache
+/client/node_modules/.cache/default-development/
 /client/node_modules/.bin/acorn
+
