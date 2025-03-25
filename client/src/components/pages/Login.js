@@ -14,7 +14,7 @@ const SERVER_PORT = 5000;
  * 
  * @author Eduardo Pereira Moreira <eduardopereiramoreira1995@gmail.com>
  * @since 1.0
- * @version 1.0
+ * @version 1.1
  */
 function LoginPage({currentUser, changeCurrentUser}) {
 
@@ -28,10 +28,10 @@ function LoginPage({currentUser, changeCurrentUser}) {
     return(
         <> {data
             ? <>
-                <div className="w3-container w3-padding-64" id="login">
+                <div className="w3-container w3-padding-64 w3-white w3-border w3-border-gray" id="login">
                     <h1 className="w3-center">{data.message}</h1>
                     <p className="w3-center">Preencha os dados abaixo para se realizar o seu login:</p>
-                    <form>
+                    <form className='w3-padding-large'>
                         <p>
                             <label for="login">Login:</label>
                             <input className="w3-input w3-padding-16" type="text" id="login" name="login" required/>
