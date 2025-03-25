@@ -14,7 +14,7 @@ const SERVER_PORT = 5000;
  * 
  * @author Eduardo Pereira Moreira <eduardopereiramoreira1995@gmail.com>
  * @since 1.0
- * @version 1.0
+ * @version 1.1
  */
 function RegisterPage({currentUser, changeCurrentUser}) {
 
@@ -28,10 +28,10 @@ function RegisterPage({currentUser, changeCurrentUser}) {
     return(
         <> {data
             ? <>
-                <div className="w3-container w3-padding-64" id="register">
+                <div className="w3-container w3-padding-64 w3-white w3-border w3-border-gray" id="register">
                     <h1 className="w3-center">{data.message}</h1>
                     <p className="w3-center">Preencha os campos abaixo para se registrar como usuário:</p>
-                    <form>
+                    <form className='w3-padding-large'>
                         <p>
                             <label for="nome">Nome:</label>
                             <input className="w3-input w3-padding-16" type="text" id="nome" name="nome" required/>
