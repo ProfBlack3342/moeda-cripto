@@ -5,6 +5,7 @@
 .pnp.js
 
 # testing
+/node_modules/.cache
 /coverage
 
 # production
