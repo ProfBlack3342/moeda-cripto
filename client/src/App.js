@@ -25,9 +25,9 @@ function TopoHTML({currentUser}) {
   return(
     <>
       <div className="w3-top">
-        <div className="w3-bar w3-white w3-padding w3-card" style={{'letter-spacing':'4px'}}>
+        <div className="w3-bar w3-orange w3-padding w3-card" style={{'letter-spacing':'4px'}}>
           <a href="/" class="w3-bar-item w3-button">Moeda Cripto</a>
-          <div className="w3-right">
+          <div className="w3-right w3-hide-small">
             <a href='/' className="w3-bar-item w3-button">Home</a>
             {currentUser === User
               ? <><a href='/profile' className="w3-bar-item w3-button">Seu Perfil</a><a href='/' className="w3-bar-item w3-button">Sair do Usuário</a></>
@@ -38,17 +38,11 @@ function TopoHTML({currentUser}) {
         </div>
       </div>
 
-      <hr/>
-      <hr/>
-      
-
       <header className="w3-display-container w3-content w3-wide" style={{'max-width':'700px', 'min-width':'500px'}} id="home">
-        <img className="w3-image" src={require('./imgs/Bitcoin-Genesis-block.jpg')} alt="Hamburger Catering" width="1600" height="800"/>
+        <img className="w3-image w3-round" src={require('./imgs/Bitcoin-Genesis-block.jpg')} alt="bloco genesis bitcoin" width="1600" height="800"/>
         
         <h5 className="w3-center w3-opacity">O Bloco Gênesis da Criptomoeda Bitcoin</h5>
       </header>
-
-      <hr/>
     </>
   );
 }
@@ -68,7 +62,7 @@ function TopoHTML({currentUser}) {
 function ConteudoHTML({currentUser, changeCurrentUser}) {
 
   return(
-    <div class="w3-content" style={{'max-width':'1100px'}}>
+    <div className="w3-content" style={{'max-width':'1100px'}}>
       <Routes>
         <Route path='/' element={<HomePage/>}/>
         <Route path='/register' element={<RegisterPage currentUser={currentUser} setCurrentUser={changeCurrentUser}/>}/>
@@ -92,7 +86,7 @@ function ConteudoHTML({currentUser, changeCurrentUser}) {
 function FooterHTML() {
   
   return (
-    <footer class="w3-center w3-light-grey w3-padding-32">
+    <footer class="w3-center w3-orange w3-padding-32">
       <div id="mapa">
         <h2>Localização</h2>
           <iframe title="Localizacao" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d55261.302456100624!2d-51.23043050671742!3d-30.04169437567704!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x951978567f17f28d%3A0x2c2c5272bacf4d3a!2sSenac%20Tech!5e0!3m2!1spt-BR!2sbr!4v1724075560999!5m2!1spt-BR!2sbr"
@@ -150,10 +144,20 @@ function App() {
   };
 
   return (
-      <Router>
+    <Router>
+
+      <div className='w3-black w3-padding-64'>
         <TopoHTML currentUser={currentUser}/>
+      </div>
+        
+      <div className='w3-topbar w3-white'>
         <ConteudoHTML currentUser={currentUser} setCurrentUser={changeCurrentUser}/>
+      </div>
+
+      <div>
         <FooterHTML/>
+      </div>
+
     </Router>
   );
 }
