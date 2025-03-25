@@ -10,7 +10,7 @@ const MYSQL_CREDENTIALS = {
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'moeda-cripto'
+    database: 'moeda_cripto'
 };
 const SERVER_PATH_PAGES = {
     contact: '/api/contact',
@@ -80,7 +80,7 @@ server.post(SERVER_PATH_DB_USER.criar, (req, res) => {
     if(!login || senha || nome || cpf || email)
         return res.status(400).send('Preencha todos os campos!');
 
-    const QUERY = 'INSERT INTO usuarios (loginUsuario, senhaUsuario, nomeUsuario, cpfUsuario, emailUsuario) VALUES (?, ?, ?, ?, ?)';
+    const QUERY = 'INSERT INTO usuarios (login, senha, nome, cpf, email) VALUES (?, ?, ?, ?, ?)';
 
     db.query(QUERY, [login, senha, nome, cpf, email], async (err, results) => {
         if(err)
