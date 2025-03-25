@@ -14,7 +14,7 @@ const SERVER_PORT = 5000;
  * 
  * @author Eduardo Pereira Moreira <eduardopereiramoreira1995@gmail.com>
  * @since 1.0
- * @version 1.0
+ * @version 1.1
  */
 function ProfilePage({currentUser, changeCurrentUser}) {
     
@@ -28,14 +28,14 @@ function ProfilePage({currentUser, changeCurrentUser}) {
     return(
         <> {data
             ? <>
-                <div className="w3-container w3-padding-64" id="profile">
+                <div className="w3-container w3-padding-64 w3-white w3-border w3-border-gray" id="profile">
                     <h1 className="w3-center">{data.message}</h1>
                     <p className="w3-center">Dados do Usuário:</p>
                     <p className="w3-center">ID #{currentUser.id} - Nome:{currentUser.nome}</p>
                     <p className="w3-center">Login: {currentUser.login} - Senha (Hash): {currentUser.senha}</p>
                     <p className="w3-center">CPF: {currentUser.cpf} - Email: {currentUser.email}</p>
                     <p className="w3-center">Se desejar modificar algum dos seus dados, marque a caixa correspondente e complete abaixo:</p>
-                    <form>
+                    <form className='w3-padding-large'>
                         <p>
                             <label for="nome"><input type='checkbox'/> Nome:</label>
                             <input className="w3-input w3-padding-16" type="text" id="nome" name="nome"/>
