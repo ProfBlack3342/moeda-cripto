@@ -1,3 +1,10 @@
+/**
+ * Classe que define um usuario
+ * 
+ * @author Eduardo Pereira Moreira <eduardopereiramoreira1995@gmail.com>
+ * @since 1.0
+ * @version 1.0
+ */
 export class User {
     #id = -1;
 
