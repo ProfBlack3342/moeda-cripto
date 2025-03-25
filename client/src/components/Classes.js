@@ -3,28 +3,34 @@
  * 
  * @author Eduardo Pereira Moreira <eduardopereiramoreira1995@gmail.com>
  * @since 1.0
- * @version 1.0
+ * @version 1.1
  */
 export class User {
     #id = -1;
 
-    get id() {return this.#id;}
+    get id() {
+        return this.#id;
+    }
     set id(newId) {
+        let tempNewId = newId;
         switch(typeof newId) {
-            case 'number':
-                this.#id = newId;
-                return true;
             case 'string':
-                this.#id = Number(newId);
-                return true;
+                tempNewId = Number(newId);
+            case 'number':
+                if(!(Number.isNaN(tempNewId))) {
+                    this.#id = tempNewId;
+                    return true;
+                }
             default:
-                this.#id = null;
+                this.#id = -1;
                 return false;
         }
     }
 
-    #login = 'LoginUsuario';
-    get login() {return this.#login;}
+    #login = 'login';
+    get login() {
+        return this.#login;
+    }
     set login(newLogin) {
         switch(typeof newLogin) {
             case 'string':
@@ -36,8 +42,10 @@ export class User {
         }
     }
 
-    #senha = 'HashSenhaUsuario';
-    get senha() {return this.#senha;}
+    #senha = 'senha';
+    get senha() {
+        return this.#senha;
+    }
     set senha(newSenha) {
         switch(typeof newSenha) {
             case 'string':
@@ -49,8 +57,10 @@ export class User {
         }
     }
 
-    #nome = 'NomeUsuario';
-    get nome() {return this.#nome;}
+    #nome = 'nome';
+    get nome() {
+        return this.#nome;
+    }
     set nome(newNome) {
         switch(typeof newNome) {
             case 'string':
@@ -62,8 +72,10 @@ export class User {
         }
     }
 
-    #cpf = 'CPF Usuario';
-    get cpf() {return this.#cpf;}
+    #cpf = 'cpf';
+    get cpf() {
+        return this.#cpf;
+    }
     set cpf(newCpf) {
         switch(typeof newCpf) {
             case 'number':
@@ -78,8 +90,10 @@ export class User {
         }
     }
 
-    #email = 'Email Usuario';
-    get email() {return this.#email;}
+    #email = 'email';
+    get email() {
+        return this.#email;
+    }
     set email(newEmail) {
         switch(typeof newEmail) {
             case 'string':
