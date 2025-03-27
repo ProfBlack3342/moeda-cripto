@@ -5,6 +5,8 @@
 .pnp.js
 
 # testing
+/node_modules
+/node_modules/
 /node_modules/.bin
 /node_modules/.bin/
 /node_modules/.cache
