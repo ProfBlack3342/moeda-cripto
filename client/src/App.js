@@ -123,7 +123,7 @@ function FooterHTML() {
 
       {/* Link para voltar ao topo da página */}
       <div id="voltarTopo" className="w3-hover-text-green">
-        <a href={"/#"}>- Voltar ao Topo -</a>
+        <a href='/#' onClick={(evt) => {evt.preventDefault(); window.scrollTo(0, 0)}}>- Voltar ao Topo -</a>
       </div>
     </footer>
   );
