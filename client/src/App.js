@@ -18,7 +18,7 @@ import ContactPage from './components/pages/Contact';
  * 
  * @author Eduardo Pereira Moreira <eduardopereiramoreira1995@gmail.com>
  * @since 1.0
- * @version 1.1
+ * @version 1.2
  */
 function TopoHTML({currentUser}) {
 
@@ -26,7 +26,9 @@ function TopoHTML({currentUser}) {
     <>
       <div className="w3-top">
         <div className="w3-bar w3-orange w3-padding w3-card" style={{'letter-spacing':'4px'}}>
-          <a href="/" class="w3-bar-item w3-button">Moeda Cripto</a>
+          <a href="/" class="w3-bar-item w3-button">
+            <img src={require('./imgs/Bitcoin_logo.png')} className="w3-image" alt="Moeda Cripto" width="140" height="30"/>
+          </a>
           <div className="w3-right w3-hide-small">
             <a href='/' className="w3-bar-item w3-button">Home</a>
             {currentUser === User
