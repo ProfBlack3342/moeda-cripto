@@ -16,7 +16,7 @@ const SERVER_PATH_PAGES = {
     contact: '/api/contact',
     home: '/api',
     login: '/api/login',
-    profile: '/api/profile',
+    profile: '/api/profile/:id',
     register: '/api/register'
 };
 const SERVER_PATH_DB_USER = {
@@ -51,6 +51,8 @@ server.get(SERVER_PATH_PAGES.login, (req, res) => {
 
 // Perfil
 server.get(SERVER_PATH_PAGES.profile, (req, res) => {
+    var id = req.params.id;
+    
     res.json({ message: 'Seu Perfil' });
 });
 
