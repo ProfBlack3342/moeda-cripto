@@ -16,7 +16,7 @@ const SERVER_PATH_PAGES = {
     contact: '/api/contact',
     home: '/api',
     login: '/api/login',
-    profile: '/api/profile/:id',
+    profile: '/api/profile/',
     register: '/api/register'
 };
 const SERVER_PATH_DB_USER = {
@@ -88,7 +88,7 @@ server.post(SERVER_PATH_DB_USER.criar, (req, res) => {
         if(err)
             return res.status(500).send('Erro ao registrar o usuário no banco de dados.');
         else {
-            if(results.affectedRows > 0) 
+            if(results.affectedRows > 0)
                 res.json({ id: results.insertId, login, senha, nome, cpf, email});
             else 
                 return res.status(500).send('Erro ao inserir o usuário no banco de dados.');
