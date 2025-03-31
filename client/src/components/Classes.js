@@ -12,13 +12,15 @@ export class User {
         return this.#id;
     }
     set id(newId) {
-        let tempNewId = newId;
+        let newIdNum = newId;   // Cópia da entrada para testes
         switch(typeof newId) {
             case 'string':
-                tempNewId = Number(newId);
+                // Se o valor teste for uma string, converte a entrada em um número e o armazena no valor teste.
+                newIdNum = Number(newId);
             case 'number':
-                if(!(Number.isNaN(tempNewId))) {
-                    this.#id = tempNewId;
+                // Caso seja um número, verifica se não é o valor especial 'NaN'. Se não for, '#id' recebe o valor
+                if(!(Number.isNaN(newIdNum))) {
+                    this.#id = newIdNum;
                     return true;
                 }
             default:
@@ -34,8 +36,11 @@ export class User {
     set login(newLogin) {
         switch(typeof newLogin) {
             case 'string':
-                this.#login = newLogin;
-                return true;
+                // Teste de tamanho, valor máximo é definido no banco de dados.
+                if(newLogin.length <= 150) {
+                    this.#login = newLogin;
+                    return true;
+                }
             default:
                 this.#login = null;
                 return false;
@@ -49,8 +54,12 @@ export class User {
     set senha(newSenha) {
         switch(typeof newSenha) {
             case 'string':
-                this.#senha = newSenha;
-                return true;
+                // Tamanho em bytes da entrada, para evitar erros na geração do hash no backend.
+                const bytesSenha = (newSenha) => new Blob([newSenha]).size;
+                if(bytesSenha <= 72) {
+                    this.#senha = newSenha;
+                    return true;
+                }
             default:
                 this.#senha = null;
                 return false;
@@ -64,8 +73,11 @@ export class User {
     set nome(newNome) {
         switch(typeof newNome) {
             case 'string':
-                this.#nome = newNome;
-                return true;
+                // Teste de tamanho, valor máximo é definido no banco de dados.
+                if(newNome.length <= 150) {
+                    this.#nome = newNome;
+                    return true;
+                }
             default:
                 this.#nome = null;
                 return false;
@@ -77,13 +89,17 @@ export class User {
         return this.#cpf;
     }
     set cpf(newCpf) {
+        let newCpfString = newCpf;  // Cópia da entrada para testes
         switch(typeof newCpf) {
             case 'number':
-                this.#cpf = String(newCpf);
-                return true;
+                // Se o valor teste for um número, converte a entrada em uma string e a armazena no valor teste.
+                newCpfString = String(newCpf);
             case 'string':
-                this.#cpf = newCpf;
-                return true;
+                // Teste de tamanho (sendo que, em 2025, CPFs tem 11 e CNPJs 14), valor máximo é definido no banco de dados.
+                if(newCpfString.length <= 14) {
+                    this.#cpf = newCpfString;
+                    return true;
+                }
             default:
                 this.#cpf = null;
                 return false;
@@ -97,8 +113,11 @@ export class User {
     set email(newEmail) {
         switch(typeof newEmail) {
             case 'string':
-                this.#email = newEmail;
-                return true;
+                // Teste de tamanho, valor máximo é definido no banco de dados.
+                if(newEmail <= 90) {
+                    this.#email = newEmail;
+                    return true;
+                }
             default:
                 this.#email = null;
                 return false;
