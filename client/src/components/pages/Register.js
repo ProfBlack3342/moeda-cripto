@@ -31,7 +31,7 @@ function RegisterPage({currentUser, changeCurrentUser}) {
                 <div className="w3-container w3-padding-64 w3-white w3-border w3-border-gray" id="register">
                     <h1 className="w3-center">{data.message}</h1>
                     <p className="w3-center">Preencha os campos abaixo para se registrar como usuário:</p>
-                    <form className='w3-padding-large'>
+                    <form className='w3-padding-large' action={'/db/user/create'} method='POST'>
                         <p>
                             <label for="nome">Nome:</label>
                             <input className="w3-input w3-padding-16" type="text" id="nome" name="nome" required/>
