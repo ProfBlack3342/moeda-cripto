@@ -26,7 +26,7 @@ function RegisterPage({currentUser, changeCurrentUser}) {
     }, []);
 
     return(
-        <> {data
+        <> {data && !currentUser
             ? <>
                 <div className="w3-container w3-padding-64 w3-white w3-border w3-border-gray" id="register">
                     <h1 className="w3-center">{data.message}</h1>
