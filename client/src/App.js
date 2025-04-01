@@ -31,7 +31,7 @@ function TopoHTML({currentUser}) {
           </a>
           <div className="w3-right w3-hide-small">
             <a href='/' className="w3-bar-item w3-button">Home</a>
-            {currentUser === User
+            {currentUser instanceof User
               ? <><a href='/profile' className="w3-bar-item w3-button">Seu Perfil</a><a href='/' className="w3-bar-item w3-button">Sair do Usuário</a></>
               : <><a href='/register' className="w3-bar-item w3-button">Criar Conta</a><a href='/login' className="w3-bar-item w3-button">Fazer Login</a></>
             }
