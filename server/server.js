@@ -16,7 +16,7 @@ const SERVER_PATH_PAGES = {
     contact: '/api/contact',
     home: '/api',
     login: '/api/login',
-    profile: '/api/profile/',
+    profile: '/api/profile',
     register: '/api/register'
 };
 const SERVER_PATH_DB_USER = {
