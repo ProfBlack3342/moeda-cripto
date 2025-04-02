@@ -31,13 +31,13 @@ function LoginPage({currentUser, changeCurrentUser}) {
                 <div className="w3-container w3-padding-64 w3-white w3-border w3-border-gray" id="login">
                     <h1 className="w3-center">{data.message}</h1>
                     <p className="w3-center">Preencha os dados abaixo para se realizar o seu login:</p>
-                    <form className='w3-padding-large'>
+                    <form className='w3-padding-large' method='POST' autoComplete='off'>
                         <p>
                             <label for="login">Login:</label>
                             <input className="w3-input w3-padding-16" type="text" id="login" name="login" required/>
                         </p>
                         <p>
-                            <label for="senha1">Senha:</label>
+                            <label for="senha">Senha:</label>
                             <input className="w3-input w3-padding-16" type="password" id="senha" name="senha" required/>
                         </p>
                         <p>
