@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const SERVER_PORT = 5000;
-
 /**
  * Gera e retorna um bloco de código HTML que define a página principal
  * @returns 
@@ -11,13 +9,14 @@ const SERVER_PORT = 5000;
  * @since 1.0
  * @version 1.1
  */
-function HomePage() {
+function HomePage({port}) {
 
+    const PATH = `http://localhost:${port}/api`;
     const [data, setData] = useState(null);
 
     useEffect(() => {
         // Requisição para a API do backend
-        axios.get(`http://localhost:${SERVER_PORT}/api`).then(response => setData(response.data)).catch(error => console.error('Erro ao buscar dados:', error));
+        axios.get(PATH).then(response => setData(response.data)).catch(error => console.error('Erro ao buscar dados:', error));
     }, []);
 
     return(
