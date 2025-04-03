@@ -5,14 +5,14 @@ const bcrypt = require('bcrypt');
 
 const server = express();
 
-const SERVER_PORT = 5000;
+const PORT = 5000;
 const MYSQL_CREDENTIALS = {
     host: 'localhost',
     user: 'root',
     password: '',
     database: 'moeda_cripto'
 };
-const PATHS_API_PAGES = {
+const PATHS_API = {
     home: '/api',
     register: '/api/register',
     login: '/api/login',
@@ -20,10 +20,10 @@ const PATHS_API_PAGES = {
     contact: '/api/contact'
 };
 const PATHS_DB_USER = {
-    create: '/db/user/create',
-    read: '/db/user/read',
-    update: '/db/user/update',
-    delete: '/db/user/delete'
+    create: PATHS_API.register + '/create',
+    read: PATHS_API.login + '/read',
+    update: PATHS_API.profile + '/update',
+    delete: PATHS_API.profile + '/delete'
 };
 
 //// Middleware para permitir requisições de diferentes origens (CORS)
@@ -35,27 +35,27 @@ server.use(express.json());
 //// Rotas das Páginas
 
 // Home
-server.get(PATHS_API_PAGES.home, (req, res) => {
+server.get(PATHS_API.home, (req, res) => {
     res.json({ message: 'O Que é o Moeda Cripto?' });
 });
 
 // Cadastro
-server.get(PATHS_API_PAGES.register, (req, res) => {
+server.get(PATHS_API.register, (req, res) => {
     res.json({ message: 'Cadastro de Novo Usuário' });
 });
 
 // Login
-server.get(PATHS_API_PAGES.login, (req, res) => {
+server.get(PATHS_API.login, (req, res) => {
     res.json({ message: 'Página de Login' });
 });
 
 // Perfil
-server.get(PATHS_API_PAGES.profile, (req, res) => {
+server.get(PATHS_API.profile, (req, res) => {
     res.json({ message: 'Seu Perfil' });
 });
 
 // Contato
-server.get(PATHS_API_PAGES.contact, (req, res) => {
+server.get(PATHS_API.contact, (req, res) => {
     res.json({ message: 'Entre em Contato'});
 });
 
@@ -238,6 +238,6 @@ server.post(PATHS_DB_USER.update, (req, res) => {
 });
 
 //// Iniciar o servidor na porta 5000
-server.listen(SERVER_PORT, () => {
-    console.log(`Servidor backend rodando em http://localhost:${SERVER_PORT}`);
+server.listen(PORT, () => {
+    console.log(`Servidor backend rodando em http://localhost:${PORT}`);
 });
