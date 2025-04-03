@@ -3,8 +3,6 @@ const cors = require('cors');
 const mysql = require('mysql2');
 const bcrypt = require('bcrypt');
 
-const server = express();
-
 const PORT = 5000;
 const MYSQL_CREDENTIALS = {
     host: 'localhost',
@@ -26,53 +24,39 @@ const PATHS_DB_USER = {
     delete: PATHS_API.profile + '/delete'
 };
 
-//// Middleware para permitir requisições de diferentes origens (CORS)
+// Instanciando uma aplicação Express e atribuindo os Middlewares
+const server = express();
 server.use(cors());
-
-//// Middleware para parsear JSON
 server.use(express.json());
 
-//// Rotas das Páginas
-
-// Home
+// Definindo rotas .GET
 server.get(PATHS_API.home, (req, res) => {
     res.json({ message: 'O Que é o Moeda Cripto?' });
 });
-
-// Cadastro
 server.get(PATHS_API.register, (req, res) => {
     res.json({ message: 'Cadastro de Novo Usuário' });
 });
-
-// Login
 server.get(PATHS_API.login, (req, res) => {
     res.json({ message: 'Página de Login' });
 });
-
-// Perfil
 server.get(PATHS_API.profile, (req, res) => {
     res.json({ message: 'Seu Perfil' });
 });
-
-// Contato
 server.get(PATHS_API.contact, (req, res) => {
     res.json({ message: 'Entre em Contato'});
 });
 
-//// Conexão com o banco de dados
+//// Criando uma conexão com o banco de dados
 const db = mysql.createConnection(MYSQL_CREDENTIALS);
 db.connect((err) => {
     if(err) {
         console.error('Erro ao conectar ao banco de dados: ' + err.stack);
         return;
     }
-
     console.log('Conectado ao banco de dados MySQL!');
 });
 
-//// CRUD MySQL
-
-// Registrar um Usuário Novo
+// Definindo rotas .POST (CRUD do Usuário)
 server.post(PATHS_DB_USER.create, (req, res) => {
 
     const {nome, cpf, email, login, senha, senhaC} = req.body;
@@ -90,7 +74,7 @@ server.post(PATHS_DB_USER.create, (req, res) => {
                     return res.status(500).send('Erro ao registrar o usuário no banco de dados.');
                 else {
                     if(results.affectedRows > 0)
-                        res.json({ id: results.insertId, login, hash, nome, cpf, email}).redirect('/');
+                        res.json({ id: results.insertId, login, hash, nome, cpf, email}).redirect(PATHS_API.home);
                     else 
                         return res.status(500).send('Erro no banco de dados.');
                 }
@@ -98,9 +82,8 @@ server.post(PATHS_DB_USER.create, (req, res) => {
         }
     }
 });
-
-// Login de Usuário Existente
 server.post(PATHS_DB_USER.read, (req, res) => {
+
     const {login, senha} = req.body;
 
     if(!login || !senha)
@@ -116,7 +99,7 @@ server.post(PATHS_DB_USER.read, (req, res) => {
                     const isMatch = await bcrypt.compare(senha, results[0].senha);
 
                     if(isMatch) 
-                        res.json({message: 'Login feito com sucesso.'}).redirect('/');
+                        res.json({message: 'Login feito com sucesso.'}).redirect(PATHS_API.home);
                     else 
                         return res.status(400).send('Senha incorreta.');
                     }
@@ -126,8 +109,6 @@ server.post(PATHS_DB_USER.read, (req, res) => {
         });
     }
 });
-
-// Listar Todos os Usuários Existentes
 server.get(PATHS_DB_USER.read, (req, res) => {
 
     const QUERY = 'SELECT * FROM usuarios';
@@ -139,13 +120,11 @@ server.get(PATHS_DB_USER.read, (req, res) => {
             res.json(results).redirect('/');
     });
 });
-
-// Atualizar um Usuário Existente
 // W.I.P.
 server.post(PATHS_DB_USER.update, (req, res) => {
 
     const {nome, cpf, email, senhaNova, senhaNovaC, login, senha} = req.body;
-    let queryUpdate = 'UPDATE usuarios SET '
+    let queryUpdate = 'UPDATE usuarios SET ';
 
     if(!login || !senha)
         return res.status(400).send('Preencha o login/senha!');
@@ -218,7 +197,7 @@ server.post(PATHS_DB_USER.update, (req, res) => {
                                     return res.status(500).send('Erro ao atualizar o usuário no banco de dados.');
                                 else {
                                     if(results.affectedRows > 0)
-                                        res.json({id: results.insertId, login, hash, nome, cpf, email}).redirect('/');
+                                        res.json({id: results.insertId, login, hash, nome, cpf, email}).redirect(PATHS_API.home);
                                     else 
                                         return res.status(500).send('Erro no banco de dados.');
                                 }
@@ -237,7 +216,7 @@ server.post(PATHS_DB_USER.update, (req, res) => {
     }
 });
 
-//// Iniciar o servidor na porta 5000
+//// Iniciando o servidor na porta 5000
 server.listen(PORT, () => {
     console.log(`Servidor backend rodando em http://localhost:${PORT}`);
 });
