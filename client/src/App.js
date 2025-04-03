@@ -34,8 +34,8 @@ function TopoHTML({currentUser}) {
   return(
     <>
       <div className="w3-top">
-        <div className="w3-bar w3-orange w3-padding w3-card" style={{'letter-spacing':'4px'}}>
-          <a href="/" class="w3-bar-item w3-button">
+        <div className="w3-bar w3-orange w3-padding w3-card" style={{'letterSpacing':'4px'}}>
+          <a href="/" className="w3-bar-item w3-button">
             <img src={require('./imgs/Bitcoin_logo.png')} className="w3-image" alt="Moeda Cripto" width="140" height="30"/>
           </a>
           <div className="w3-right w3-hide-small">
@@ -49,7 +49,7 @@ function TopoHTML({currentUser}) {
         </div>
       </div>
 
-      <header className="w3-display-container w3-content w3-wide" style={{'max-width':'700px', 'min-width':'500px'}} id="home">
+      <header className="w3-display-container w3-content w3-wide" style={{'maxWidth':'700px', 'minWidth':'500px'}} id="home">
         <img className="w3-image w3-round" src={require('./imgs/Bitcoin-Genesis-block.jpg')} alt="bloco genesis bitcoin" width="1600" height="800"/>
         
         <h5 className="w3-center w3-opacity">O Bloco Gênesis da Criptomoeda Bitcoin</h5>
@@ -73,9 +73,9 @@ function TopoHTML({currentUser}) {
 function ConteudoHTML({currentUser, changeCurrentUser}) {
 
   return(
-    <div className="w3-content" style={{'max-width':'1100px'}}>
+    <div className="w3-content" style={{'maxWidth':'1100px'}}>
       <Routes>
-        <Route path={PATHS.home} element={<HomePage/>}/>
+        <Route path={PATHS.home} element={<HomePage port={PORT}/>}/>
         <Route path={PATHS.register} element={<RegisterPage port={PORT} currentUser={currentUser} setCurrentUser={changeCurrentUser}/>}/>
         <Route path={PATHS.login} element={<LoginPage port={PORT} currentUser={currentUser} setCurrentUser={changeCurrentUser}/>}/>
         <Route path={PATHS.profile} element={<ProfilePage port={PORT} currentUser={currentUser} setCurrentUser={changeCurrentUser}/>}/>
@@ -101,7 +101,7 @@ function FooterHTML() {
       <div id="mapa">
         <h2>Localização</h2>
           <iframe className='w3-white' title="Localizacao" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d55261.302456100624!2d-51.23043050671742!3d-30.04169437567704!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x951978567f17f28d%3A0x2c2c5272bacf4d3a!2sSenac%20Tech!5e0!3m2!1spt-BR!2sbr!4v1724075560999!5m2!1spt-BR!2sbr"
-            width="400" height="300" style={{border:'0'}} allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+            width="400" height="300" style={{border:'0'}} allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade">
           </iframe>
       </div>
 
