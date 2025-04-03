@@ -46,7 +46,7 @@ server.get(PATHS_API.contact, (req, res) => {
     res.json({ message: 'Entre em Contato'});
 });
 
-//// Criando uma conexão com o banco de dados
+// Criando uma conexão com o banco de dados
 const db = mysql.createConnection(MYSQL_CREDENTIALS);
 db.connect((err) => {
     if(err) {
@@ -216,7 +216,7 @@ server.post(PATHS_DB_USER.update, (req, res) => {
     }
 });
 
-//// Iniciando o servidor na porta 5000
+// Iniciando o servidor
 server.listen(PORT, () => {
     console.log(`Servidor backend rodando em http://localhost:${PORT}`);
 });
