@@ -9,7 +9,7 @@ import LoginPage from './components/pages/Login';
 import ProfilePage from './components/pages/Profile';
 import ContactPage from './components/pages/Contact';
 
-const SERVER_PORT = 5000;
+const PORT = 5000;
 const PATHS = {
   home: '/',
   profile: '/profile',
@@ -27,7 +27,7 @@ const PATHS = {
  * 
  * @author Eduardo Pereira Moreira <eduardopereiramoreira1995@gmail.com>
  * @since 1.0
- * @version 1.2
+ * @version 1.0
  */
 function TopoHTML({currentUser}) {
 
@@ -68,7 +68,7 @@ function TopoHTML({currentUser}) {
  * 
  * @author Eduardo Pereira Moreira <eduardopereiramoreira1995@gmail.com>
  * @since 1.0
- * @version 1.1
+ * @version 1.0
  */
 function ConteudoHTML({currentUser, changeCurrentUser}) {
 
@@ -76,10 +76,10 @@ function ConteudoHTML({currentUser, changeCurrentUser}) {
     <div className="w3-content" style={{'max-width':'1100px'}}>
       <Routes>
         <Route path={PATHS.home} element={<HomePage/>}/>
-        <Route path={PATHS.register} element={<RegisterPage port={SERVER_PORT} currentUser={currentUser} setCurrentUser={changeCurrentUser}/>}/>
-        <Route path={PATHS.login} element={<LoginPage port={SERVER_PORT} currentUser={currentUser} setCurrentUser={changeCurrentUser}/>}/>
-        <Route path={PATHS.profile} element={<ProfilePage port={SERVER_PORT} currentUser={currentUser} setCurrentUser={changeCurrentUser}/>}/>
-        <Route path={PATHS.contact} element={<ContactPage port={SERVER_PORT}/>}/>
+        <Route path={PATHS.register} element={<RegisterPage port={PORT} currentUser={currentUser} setCurrentUser={changeCurrentUser}/>}/>
+        <Route path={PATHS.login} element={<LoginPage port={PORT} currentUser={currentUser} setCurrentUser={changeCurrentUser}/>}/>
+        <Route path={PATHS.profile} element={<ProfilePage port={PORT} currentUser={currentUser} setCurrentUser={changeCurrentUser}/>}/>
+        <Route path={PATHS.contact} element={<ContactPage port={PORT}/>}/>
       </Routes>
     </div>
   );
@@ -92,7 +92,7 @@ function ConteudoHTML({currentUser, changeCurrentUser}) {
  * 
  * @author Eduardo Pereira Moreira <eduardopereiramoreira1995@gmail.com>
  * @since 1.0
- * @version 1.1
+ * @version 1.0
  */
 function FooterHTML() {
   
@@ -149,7 +149,7 @@ function FooterHTML() {
  * 
  * @author Eduardo Pereira Moreira <eduardopereiramoreira1995@gmail.com>
  * @since 1.0
- * @version 1.1
+ * @version 1.0
  */
 function App() {
 
