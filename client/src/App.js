@@ -9,6 +9,15 @@ import LoginPage from './components/pages/Login';
 import ProfilePage from './components/pages/Profile';
 import ContactPage from './components/pages/Contact';
 
+const SERVER_PORT = 5000;
+const PATHS = {
+  home: '/',
+  profile: '/profile',
+  register: '/register',
+  login: '/login',
+  contact: '/contact'
+};
+
 /**
  * Gera e retorna um bloco de código HTML que define o topo do site
  * 
@@ -30,12 +39,12 @@ function TopoHTML({currentUser}) {
             <img src={require('./imgs/Bitcoin_logo.png')} className="w3-image" alt="Moeda Cripto" width="140" height="30"/>
           </a>
           <div className="w3-right w3-hide-small">
-            <a href='/' className="w3-bar-item w3-button">Home</a>
+            <a href={PATHS.home} className="w3-bar-item w3-button">Home</a>
             {currentUser instanceof User
-              ? <><a href='/profile' className="w3-bar-item w3-button">Seu Perfil</a><a href='/' className="w3-bar-item w3-button">Sair do Usuário</a></>
-              : <><a href='/register' className="w3-bar-item w3-button">Criar Conta</a><a href='/login' className="w3-bar-item w3-button">Fazer Login</a></>
+              ? <><a href={PATHS.profile} className="w3-bar-item w3-button">Seu Perfil</a><a href={PATHS.home} className="w3-bar-item w3-button">Sair do Usuário</a></>
+              : <><a href={PATHS.register} className="w3-bar-item w3-button">Criar Conta</a><a href={PATHS.login} className="w3-bar-item w3-button">Fazer Login</a></>
             }
-            <a href='/contact' className="w3-bar-item w3-button">Contato</a>
+            <a href={PATHS.contact} className="w3-bar-item w3-button">Contato</a>
           </div>
         </div>
       </div>
@@ -66,11 +75,11 @@ function ConteudoHTML({currentUser, changeCurrentUser}) {
   return(
     <div className="w3-content" style={{'max-width':'1100px'}}>
       <Routes>
-        <Route path='/' element={<HomePage/>}/>
-        <Route path='/register' element={<RegisterPage currentUser={currentUser} setCurrentUser={changeCurrentUser}/>}/>
-        <Route path='/login' element={<LoginPage currentUser={currentUser} setCurrentUser={changeCurrentUser}/>}/>
-        <Route path='/profile' element={<ProfilePage currentUser={currentUser} setCurrentUser={changeCurrentUser}/>}/>
-        <Route path='/contact' element={<ContactPage/>}/>
+        <Route path={PATHS.home} element={<HomePage/>}/>
+        <Route path={PATHS.register} element={<RegisterPage port={SERVER_PORT} currentUser={currentUser} setCurrentUser={changeCurrentUser}/>}/>
+        <Route path={PATHS.login} element={<LoginPage port={SERVER_PORT} currentUser={currentUser} setCurrentUser={changeCurrentUser}/>}/>
+        <Route path={PATHS.profile} element={<ProfilePage port={SERVER_PORT} currentUser={currentUser} setCurrentUser={changeCurrentUser}/>}/>
+        <Route path={PATHS.contact} element={<ContactPage port={SERVER_PORT}/>}/>
       </Routes>
     </div>
   );
