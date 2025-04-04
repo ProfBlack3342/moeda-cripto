@@ -128,4 +128,15 @@ export class User {
         return `User -> ID = ${this.#id} || Login = ${this.#login} || Senha = ${this.#senha} || Nome = ${this.#nome} || CPF = ${this.#cpf} || Email = ${this.#email}\n`;
     }
 
+    toJson() {
+        return {
+                id: this.#id,
+                login: this.#login,
+                senha: this.#senha,
+                nome: this.#nome,
+                cpf: this.#cpf,
+                email: this.#email
+            };
+    }
+
 }
