@@ -23,7 +23,7 @@ function ProfilePage({port, currentUser, changeCurrentUser}) {
         // Requisição para a API do backend
         axios.get(PATH).then(response => setData(response.data)).catch(error => console.error('Erro ao buscar dados:', error));
     }, []);
-
+    
     return(
         <> {data && currentUser
             ? <>
@@ -64,7 +64,7 @@ function ProfilePage({port, currentUser, changeCurrentUser}) {
                             <input className="w3-input w3-padding-16" type="password" id="senha" name="senha" required/>
                         </p>
                         <p>
-                            <button className="w3-button w3-light-grey w3-section" type="submit">Atualizar seu Cadastro</button>
+                            <button className="w3-button w3-light-grey w3-section" type="submit" >Atualizar seu Cadastro</button>
                         </p>
                     </form>
                 </div>
