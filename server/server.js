@@ -57,6 +57,7 @@ db.connect((err) => {
 });
 
 // Definindo rotas .POST (CRUD do Usuário)
+// Registro
 server.post(PATHS_DB_USER.create, (req, res) => {
 
     const {nome, cpf, email, login, senha, senhaC} = req.body;
@@ -82,6 +83,7 @@ server.post(PATHS_DB_USER.create, (req, res) => {
         }
     }
 });
+// Login
 server.post(PATHS_DB_USER.read, (req, res) => {
 
     const {login, senha} = req.body;
@@ -109,6 +111,7 @@ server.post(PATHS_DB_USER.read, (req, res) => {
         });
     }
 });
+// Listagem
 server.get(PATHS_DB_USER.read, (req, res) => {
 
     const QUERY = 'SELECT * FROM usuarios';
@@ -120,6 +123,7 @@ server.get(PATHS_DB_USER.read, (req, res) => {
             res.json(results).redirect('/');
     });
 });
+// Modificação
 // W.I.P.
 server.post(PATHS_DB_USER.update, (req, res) => {
 
@@ -189,10 +193,12 @@ server.post(PATHS_DB_USER.update, (req, res) => {
                     return res.status(500).send('Erro ao pesquisar o login no banco de dados.');
                 else {
                     if(results.length > 0) {
+
                         const isMatch = await bcrypt.compare(senha, results[0].senha);
                         if(isMatch) {
+
                             queryUpdate += ' WHERE id = ' + results[0].id;
-                            db.query(QUERY, async (err, results) => {
+                            db.query(queryUpdate, async (err, results) => {
                                 if(err)
                                     return res.status(500).send('Erro ao atualizar o usuário no banco de dados.');
                                 else {
@@ -201,18 +207,17 @@ server.post(PATHS_DB_USER.update, (req, res) => {
                                     else 
                                         return res.status(500).send('Erro no banco de dados.');
                                 }
-                                    
                             });
-
                         } 
                         else 
                             return res.status(400).send('Senha atual incorreta.');
-                        }
+                    }
                     else
                         return res.status(400).send('Usuário não encontrado.');
                 }   
             });
         }
+
     }
 });
 
