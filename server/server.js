@@ -58,7 +58,7 @@ db.connect((err) => {
 
 // Definindo rotas .POST (CRUD do Usuário)
 // Registro
-server.post(PATHS_DB_USER.create, (req, res) => {
+server.post(PATHS_API.register, (req, res) => {
 
     const {nome, cpf, email, login, senha, senhaC} = req.body;
 
@@ -75,7 +75,7 @@ server.post(PATHS_DB_USER.create, (req, res) => {
                     return res.status(500).send('Erro ao registrar o usuário no banco de dados.');
                 else {
                     if(results.affectedRows > 0)
-                        res.json({ id: results.insertId, login, hash, nome, cpf, email}).redirect(PATHS_API.home);
+                        res.json({ id: results.insertId, login, hash, nome, cpf, email});
                     else 
                         return res.status(500).send('Erro no banco de dados.');
                 }
@@ -84,7 +84,7 @@ server.post(PATHS_DB_USER.create, (req, res) => {
     }
 });
 // Login
-server.post(PATHS_DB_USER.read, (req, res) => {
+server.post(PATHS_API.login, (req, res) => {
 
     const {login, senha} = req.body;
 
@@ -101,7 +101,7 @@ server.post(PATHS_DB_USER.read, (req, res) => {
                     const isMatch = await bcrypt.compare(senha, results[0].senha);
 
                     if(isMatch) 
-                        res.json({message: 'Login feito com sucesso.'}).redirect(PATHS_API.home);
+                        res.json({message: 'Login feito com sucesso.'});
                     else 
                         return res.status(400).send('Senha incorreta.');
                     }
@@ -136,7 +136,7 @@ server.post(PATHS_DB_USER.update, (req, res) => {
         let change = false;
         if(Object.hasOwn(req.body, 'chkNome')) {
             if(!nome)
-                return res.status(400).send('Preencha todos os campos que você deseja modificar!');
+                return res.status(400).send('Preencha ou desmarque o campo "Nome"!');
             else {
                 queryUpdate += 'nome = ' + nome;
                 change = true;
@@ -144,7 +144,7 @@ server.post(PATHS_DB_USER.update, (req, res) => {
         }
         if(Object.hasOwn(req.body, 'chkCpf')) {
             if(!cpf)
-                return res.status(400).send('Preencha todos os campos que você deseja modificar!');
+                return res.status(400).send('Preencha ou desmarque o campo "CPF"!');
             else {
                 if(change)
                     queryUpdate += 'cpf = ' + cpf;
@@ -156,7 +156,7 @@ server.post(PATHS_DB_USER.update, (req, res) => {
         }
         if(Object.hasOwn(req.body, 'chkEmail')) {
             if(!email)
-                return res.status(400).send('Preencha todos os campos que você deseja modificar!');
+                return res.status(400).send('Preencha ou desmarque o campo "Email"!');
             else {
                 if(change)
                     queryUpdate += 'email = ' + email;
@@ -168,7 +168,7 @@ server.post(PATHS_DB_USER.update, (req, res) => {
         }
         if(Object.hasOwn(req.body, 'chkSenhaNova')) {
             if(!senhaNova || !senhaNovaC)
-                return res.status(400).send('Preencha todos os campos que você deseja modificar!'); 
+                return res.status(400).send('Preencha ou desmarque o campo "Nova Senha"!');
             else {
                 if(senhaNova != senhaNovaC)
                     return res.status(400).send('A senha nova e a sua confirmação devem ter valores iguais!');
@@ -203,7 +203,7 @@ server.post(PATHS_DB_USER.update, (req, res) => {
                                     return res.status(500).send('Erro ao atualizar o usuário no banco de dados.');
                                 else {
                                     if(results.affectedRows > 0)
-                                        res.json({id: results.insertId, login, hash, nome, cpf, email}).redirect(PATHS_API.home);
+                                        res.json({id: results.insertId, login, hash, nome, cpf, email});
                                     else 
                                         return res.status(500).send('Erro no banco de dados.');
                                 }
