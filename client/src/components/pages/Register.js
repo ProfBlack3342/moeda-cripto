@@ -5,9 +5,10 @@ import { User } from '../Classes.js';
 
 /**
  * Gera e retorna um bloco de código HTML que define a página de registro
- * @param {Object} userState - Um objeto contendo:
- * @param {User | null} userState.currentUser - O usuário atualmente logado, ou nulo se não estiver.
- * @param {Function} userState.changeCurrentUser - A função que altera o usuário logado atualmente.
+ * @param {Object} props - Um objeto contendo:
+ * @param {Number} props.port - A porta da conexão com o servidor backend
+ * @param {User | null} props.currentUser - O usuário atualmente logado, ou nulo se nenhum estiver.
+ * @param {(newUser: User) => void} props.changeCurrentUser - A função que altera o usuário logado atualmente.
  * @returns Uma página HTML para registrar um usuário novo
  * 
  * @author Eduardo Pereira Moreira <eduardopereiramoreira1995@gmail.com>
@@ -19,6 +20,7 @@ function RegisterPage({port, currentUser, changeCurrentUser}) {
     const PATH = `http://localhost:${port}/api/register`;
     const [data, setData] = useState(null);
 
+    const [postForm, setPostForm] = useState(false);
     const [nome, setNome] = useState('');
     const [cpf, setCpf] = useState('');
     const [email, setEmail] = useState('');
@@ -28,33 +30,42 @@ function RegisterPage({port, currentUser, changeCurrentUser}) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-
-        const user = new User();
-
-
-        axios.post(PATH, {
-            'nome' : nome,
-            'cpf': cpf,
-            'email': email,
-            'login': login,
-            'senha': senha,
-            'senhaC': senhaC
-        }).then(response => {
-            user.id = response.data.id;
-            user.login = response.data.login;
-            user.senha = response.data.hash;
-            user.nome = response.data.nome;
-            user.cpf = response.data.cpf;
-            user.email = response.data.email;
-        });
-        changeCurrentUser(user);
-        document.location.href = '/';
+        setPostForm(true);
     };
 
     useEffect(() => {
         // Requisição para a API do backend
         axios.get(PATH).then(response => setData(response.data)).catch(error => console.error('Erro ao buscar dados:', error));
     }, []);
+
+    useEffect(() => {
+        if(postForm) {
+            const user = new User();
+
+            axios.post(PATH, {
+                'nome' : nome,
+                'cpf': cpf,
+                'email': email,
+                'login': login,
+                'senha': senha,
+                'senhaC': senhaC
+            }).then(response => {
+                user.id = response.data.id;
+                user.login = response.data.login;
+                user.senha = response.data.hash;
+                user.nome = response.data.nome;
+                user.cpf = response.data.cpf;
+                user.email = response.data.email;
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+            .finally(() => {
+                changeCurrentUser(user);
+                document.location.href = '/';
+            });
+        }
+    }, [postForm]);
 
     return(
         <> {data && !currentUser
