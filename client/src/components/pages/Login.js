@@ -5,9 +5,10 @@ import { User } from '../Classes.js';
 
 /**
  * Gera e retorna um bloco de código HTML que define a página de login
- * @param {Object} userState - Um objeto contendo:
- * @param {User | null} userState.currentUser - O usuário atualmente logado, ou nulo se não estiver.
- * @param {Function} userState.changeCurrentUser - A função que altera o usuário logado atualmente.
+ * @param {Object} props - Um objeto contendo:
+ *      @param {Number} props.port - A porta da conexão com o servidor backend
+ *      @param {User | null} props.currentUser - O usuário atualmente logado, ou nulo se nenhum estiver.
+ *      @param {(newUser: User) => void} props.changeCurrentUser - A função que altera o usuário logado atualmente.
  * @returns Uma página HTML para fazer login em um usuário existente
  * 
  * @author Eduardo Pereira Moreira <eduardopereiramoreira1995@gmail.com>
