@@ -29,23 +29,6 @@ const server = express();
 server.use(cors());
 server.use(express.json());
 
-// Definindo rotas .GET
-server.get(PATHS_API.home, (req, res) => {
-    res.json({ message: 'O Que é o Moeda Cripto?' });
-});
-server.get(PATHS_API.register, (req, res) => {
-    res.json({ message: 'Cadastro de Novo Usuário' });
-});
-server.get(PATHS_API.login, (req, res) => {
-    res.json({ message: 'Página de Login' });
-});
-server.get(PATHS_API.profile, (req, res) => {
-    res.json({ message: 'Seu Perfil' });
-});
-server.get(PATHS_API.contact, (req, res) => {
-    res.json({ message: 'Entre em Contato'});
-});
-
 // Criando uma conexão com o banco de dados
 const db = mysql.createConnection(MYSQL_CREDENTIALS);
 db.connect((err) => {
@@ -56,8 +39,16 @@ db.connect((err) => {
     console.log('Conectado ao banco de dados MySQL!');
 });
 
-// Definindo rotas .POST (CRUD do Usuário)
-// Registro
+// Definindo rotas
+// Home
+server.get(PATHS_API.home, (req, res) => {
+    res.json({ message: 'O Que é o Moeda Cripto?' });
+});
+
+// Cadastro
+server.get(PATHS_API.register, (req, res) => {
+    res.json({ message: 'Cadastro de Novo Usuário' });
+});
 server.post(PATHS_API.register, (req, res) => {
 
     const {nome, cpf, email, login, senha, senhaC} = req.body;
@@ -69,21 +60,28 @@ server.post(PATHS_API.register, (req, res) => {
             return res.status(400).send('A senha e a sua confirmação devem ter valores iguais!');
         else {
             const hash = bcrypt.hash(senha, 12);
-            const QUERY = 'INSERT INTO usuarios (login, senha, nome, cpf, email) VALUES (?, ?, ?, ?, ?)';
-            db.query(QUERY, [login, hash, nome, cpf, email], async (err, results) => {
-                if(err)
-                    return res.status(500).send('Erro ao registrar o usuário no banco de dados.');
-                else {
-                    if(results.affectedRows > 0)
-                        res.json({ id: results.insertId, login, hash, nome, cpf, email});
-                    else 
-                        return res.status(500).send('Erro no banco de dados.');
+
+            db.execute(
+                'INSERT INTO usuarios (login, senha, nome, cpf, email) VALUES (?, ?, ?, ?, ?)', [login, hash, nome, cpf, email],
+                (err, results) => {
+                    if(err)
+                        return res.status(500).send('Erro ao registrar o usuário no banco de dados.');
+                    else {
+                        if(results.affectedRows > 0)
+                            res.status(200).json({ id: results.insertId, login, hash, nome, cpf, email});
+                        else 
+                            return res.status(500).send('Erro no banco de dados.');
+                    }
                 }
-            });
+            );
         }
     }
 });
+
 // Login
+server.get(PATHS_API.login, (req, res) => {
+    res.json({ message: 'Página de Login' });
+});
 server.post(PATHS_API.login, (req, res) => {
 
     const {login, senha} = req.body;
@@ -93,47 +91,63 @@ server.post(PATHS_API.login, (req, res) => {
     else {
         const QUERY = 'SELECT * FROM usuarios WHERE login = ?';
 
-        db.query(QUERY, [login], async (err, results) => {
-            if(err)
-                return res.status(500).send('Erro ao pesquisar o login no banco de dados.');
-            else {
-                if(results.length > 0) {
-                    const isMatch = await bcrypt.compare(senha, results[0].senha);
+        db.execute(
+            'SELECT * FROM usuarios WHERE login = ?', [login],
+            async (err, rows) => {
+                if(err)
+                    return res.status(500).send('Erro ao pesquisar o usuário no banco de dados.');
+                else {
+                    if(results.length > 0) {
+                        const hash = results[0].senha;
+                        const isMatch = await bcrypt.compare(senha, hash);
 
-                    if(isMatch) 
-                        res.json({message: 'Login feito com sucesso.'});
-                    else 
-                        return res.status(400).send('Senha incorreta.');
+                        if(isMatch) 
+                            res.status(200).json({id: results[0].id, login: results[0].login, senha: hash, nome: results[0].nome, cpf: results[0].cpf, email: results[0].email});
+                        else 
+                            return res.status(400).send('Senha incorreta.');
                     }
-                else
-                    return res.status(400).send('Usuário não encontrado.');
-            }   
-        });
+                    else 
+                        return res.status(500).send('Erro no banco de dados.');
+                }
+            }
+        );
     }
 });
-// Listagem
-server.get(PATHS_DB_USER.read, (req, res) => {
 
-    const QUERY = 'SELECT * FROM usuarios';
-
-    db.query(QUERY, (err, results) => {
-        if(err)
-            res.status(500).send('Erro ao consultar banco de dados');
-        else
-            res.json(results).redirect('/');
-    });
+// Perfil
+server.get(PATHS_API.profile, (req, res) => {
+    res.redirect(PATHS_API.home);
 });
-// Modificação
-// W.I.P.
-server.post(PATHS_DB_USER.update, (req, res) => {
-
+server.get(PATHS_API.profile + '/:id', (req, res) => {
+    const id = req.params.id;
+    
+    res.json({ message: 'Seu Perfil' });
+});
+server.post(PATHS_API.profile + '/:id', (req, res) => {
+    const id = req.params.id;
     const {nome, cpf, email, senhaNova, senhaNovaC, login, senha} = req.body;
-    let queryUpdate = 'UPDATE usuarios SET ';
 
     if(!login || !senha)
         return res.status(400).send('Preencha o login/senha!');
     else {
+        const QUERY_UPDATE = 'UPDATE usuarios SET ';
         let change = false;
+        if(Object.hasOwn(req.body, 'chkSenhaNova')) {
+            if(!senhaNova || !senhaNovaC)
+                return res.status(400).send('Preencha ou desmarque o campo "Nova Senha"!');
+            else {
+                if(senhaNova != senhaNovaC)
+                    return res.status(400).send('A senha nova e a sua confirmação devem ter valores iguais!');
+                else {
+                    if(change)
+                        queryUpdate += 'senha = ' + bcrypt.hash(senhaNova, 12);
+                    else {
+                        queryUpdate += ', senha = ' + bcrypt.hash(senhaNova, 12);
+                        change = true;
+                    }
+                }
+            }
+        }
         if(Object.hasOwn(req.body, 'chkNome')) {
             if(!nome)
                 return res.status(400).send('Preencha ou desmarque o campo "Nome"!');
@@ -166,59 +180,67 @@ server.post(PATHS_DB_USER.update, (req, res) => {
                 }
             }
         }
-        if(Object.hasOwn(req.body, 'chkSenhaNova')) {
-            if(!senhaNova || !senhaNovaC)
-                return res.status(400).send('Preencha ou desmarque o campo "Nova Senha"!');
-            else {
-                if(senhaNova != senhaNovaC)
-                    return res.status(400).send('A senha nova e a sua confirmação devem ter valores iguais!');
-                else {
-                    if(change)
-                        queryUpdate += 'senha = ' + bcrypt.hash(senhaNova, 12);
-                    else {
-                        queryUpdate += ', senha = ' + bcrypt.hash(senhaNova, 12);
-                        change = true;
-                    }
-                }
-            }
-        }
+        
 
         if(!change) 
             return res.status(400).send('Nenhum dado foi alterado!');
         else {
-            const QUERY_LOGIN = 'SELECT * FROM usuarios WHERE login = ?';
-
-            db.query(QUERY_LOGIN, [login], async (err, results) => {
-                if(err)
-                    return res.status(500).send('Erro ao pesquisar o login no banco de dados.');
-                else {
-                    if(results.length > 0) {
-
-                        const isMatch = await bcrypt.compare(senha, results[0].senha);
-                        if(isMatch) {
-
-                            queryUpdate += ' WHERE id = ' + results[0].id;
-                            db.query(queryUpdate, async (err, results) => {
-                                if(err)
-                                    return res.status(500).send('Erro ao atualizar o usuário no banco de dados.');
-                                else {
-                                    if(results.affectedRows > 0)
-                                        res.json({id: results.insertId, login, hash, nome, cpf, email});
-                                    else 
-                                        return res.status(500).send('Erro no banco de dados.');
-                                }
-                            });
-                        } 
+            db.execute(
+                'SELECT * FROM usuarios WHERE login = ?', [login],
+                async (err, rows) => {
+                    if(err)
+                        return res.status(500).send('Erro ao pesquisar o usuário no banco de dados.');
+                    else {
+                        if(results.length > 0) {
+                            const hash = results[0].senha;
+                            const isMatch = await bcrypt.compare(senha, hash);
+    
+                            if(isMatch) {
+                                const hashN = bcrypt.hash(senhaNova, 12);
+                                db.execute(
+                                    'UPDATE usuarios SET senha = ?, nome = ?, cpf = ?, email = ? WHERE id = ?', [hashN, nome, cpf, email, id],
+                                    (err, results) => {
+                                        if(err)
+                                            return res.status(500).send('Erro ao registrar o usuário no banco de dados.');
+                                        else {
+                                            if(results.affectedRows > 0)
+                                                res.status(200).json({ id: results.insertId, login, hash, nome, cpf, email});
+                                            else 
+                                                return res.status(500).send('Erro no banco de dados.');
+                                        }
+                                    }
+                                );
+                            } 
+                            else 
+                                return res.status(400).send('Senha incorreta.');
+                        }
                         else 
-                            return res.status(400).send('Senha atual incorreta.');
+                            return res.status(500).send('Erro no banco de dados.');
                     }
-                    else
-                        return res.status(400).send('Usuário não encontrado.');
-                }   
-            });
+                }
+            );
         }
-
     }
+});
+
+// Contato
+server.get(PATHS_API.contact, (req, res) => {
+    res.json({ message: 'Entre em Contato'});
+});
+server.post(PATHS_API.contact, (req, res) => {
+    res.json({ message: 'Entre em Contato'});
+});
+
+server.get(PATHS_DB_USER.read, (req, res) => {
+
+    const QUERY = 'SELECT * FROM usuarios';
+
+    db.query(QUERY, (err, results) => {
+        if(err)
+            res.status(500).send('Erro ao consultar banco de dados');
+        else
+            res.json(results).redirect('/');
+    });
 });
 
 // Iniciando o servidor
