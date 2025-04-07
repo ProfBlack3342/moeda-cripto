@@ -3,6 +3,7 @@ import axios from 'axios';
 
 /**
  * Gera e retorna um bloco de código HTML que define a página de contato
+ * @param {Number} props.port - A porta da conexão com o servidor backend
  * @returns 
  * 
  * @author Eduardo Pereira Moreira <eduardopereiramoreira1995@gmail.com>
