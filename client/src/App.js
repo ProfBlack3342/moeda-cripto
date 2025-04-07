@@ -61,9 +61,9 @@ function TopoHTML({currentUser}) {
 /**
  * Gera e retorna um bloco de código HTML que define o conteúdo principal do site
  * 
- * @param {Object} userState - Um objeto contendo:
- * @param {User | null} userState.currentUser - O usuário atualmente logado, ou nulo se não estiver.
- * @param {Function} userState.changeCurrentUser - A função que altera o usuário logado atualmente.
+ * @param {Object} props - Um objeto contendo:
+ * @param {User | null} props.currentUser - O usuário atualmente logado, ou nulo se nenhum estiver.
+ * @param {(newUser: User) => void} props.changeCurrentUser - A função que altera o usuário logado atualmente.
  * @returns O código HTML com o conteúdo da página
  * 
  * @author Eduardo Pereira Moreira <eduardopereiramoreira1995@gmail.com>
@@ -76,9 +76,9 @@ function ConteudoHTML({currentUser, changeCurrentUser}) {
     <div className="w3-content" style={{'maxWidth':'1100px'}}>
       <Routes>
         <Route path={PATHS.home} element={<HomePage port={PORT}/>}/>
-        <Route path={PATHS.register} element={<RegisterPage port={PORT} currentUser={currentUser} setCurrentUser={changeCurrentUser}/>}/>
-        <Route path={PATHS.login} element={<LoginPage port={PORT} currentUser={currentUser} setCurrentUser={changeCurrentUser}/>}/>
-        <Route path={PATHS.profile} element={<ProfilePage port={PORT} currentUser={currentUser} setCurrentUser={changeCurrentUser}/>}/>
+        <Route path={PATHS.register} element={<RegisterPage port={PORT} currentUser={currentUser} changeCurrentUser={changeCurrentUser}/>}/>
+        <Route path={PATHS.login} element={<LoginPage port={PORT} currentUser={currentUser} changeCurrentUser={changeCurrentUser}/>}/>
+        <Route path={PATHS.profile} element={<ProfilePage port={PORT} currentUser={currentUser} changeCurrentUser={changeCurrentUser}/>}/>
         <Route path={PATHS.contact} element={<ContactPage port={PORT}/>}/>
       </Routes>
     </div>
@@ -166,7 +166,7 @@ function App() {
       </div>
         
       <div className='w3-light-gray w3-topbar w3-bottombar w3-padding-64'>
-        <ConteudoHTML currentUser={currentUser} setCurrentUser={changeCurrentUser}/>
+        <ConteudoHTML currentUser={currentUser} changeCurrentUser={changeCurrentUser}/>
       </div>
 
       <div>
