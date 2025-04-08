@@ -29,19 +29,19 @@ function ContactPage({port}) {
                     <form className='w3-padding-large'>
                         <p>
                         
-                            <label for="nome">Nome:</label>
+                            <label htmlFor="nome">Nome:</label>
                             <input className="w3-input w3-padding-16" type="text" id="nome" name="nome" required/>
                         </p>
                         <p>
-                            <label for="email">Email:</label>
+                            <label htmlFor="email">Email:</label>
                             <input className="w3-input w3-padding-16" type="email" id="email" name="email" required/>
                         </p>
                         <p>
-                            <label for="assunto">Assunto:</label>
+                            <label htmlFor="assunto">Assunto:</label>
                             <input className="w3-input w3-padding-16" type="text" id="assunto" name="assunto" required/>
                         </p>
                         <p>
-                            <label for="msg">Mensagem:</label>
+                            <label htmlFor="msg">Mensagem:</label>
                             <textarea className="w3-input w3-padding-16" type="text" id="msg" name="msg" rows={10} cols={50} required/>
                         </p>
                         <p>
