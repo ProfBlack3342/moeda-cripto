@@ -30,7 +30,31 @@ function RegisterPage({port, currentUser, changeCurrentUser}) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        setPostForm(true);
+        const user = new User();
+        axios.post(PATH, {
+                nome,
+                cpf,
+                email,
+                login,
+                senha,
+                senhaC
+            }
+        ).then(response => {
+            user.id = response.data.id;
+            user.login = response.data.login;
+            user.hash = response.data.hash;
+            user.nome = response.data.nome;
+            user.cpf = response.data.cpf;
+            user.email = response.data.email;
+            changeCurrentUser(user);
+            console.log(user.toString);
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+        .finally(() => {
+            setPostForm(true);
+        });
     };
 
     useEffect(() => {
@@ -40,30 +64,7 @@ function RegisterPage({port, currentUser, changeCurrentUser}) {
 
     useEffect(() => {
         if(postForm) {
-            const user = new User();
-
-            axios.post(PATH, {
-                'nome' : nome,
-                'cpf': cpf,
-                'email': email,
-                'login': login,
-                'senha': senha,
-                'senhaC': senhaC
-            }).then(response => {
-                user.id = response.data.id;
-                user.login = response.data.login;
-                user.senha = response.data.hash;
-                user.nome = response.data.nome;
-                user.cpf = response.data.cpf;
-                user.email = response.data.email;
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-            .finally(() => {
-                changeCurrentUser(user);
-                document.location.href = '/';
-            });
+            
         }
     }, [postForm]);
 
@@ -73,33 +74,33 @@ function RegisterPage({port, currentUser, changeCurrentUser}) {
                 <div className="w3-container w3-padding-64 w3-white w3-border w3-border-gray" id="register">
                     <h1 className="w3-center">{data.message}</h1>
                     <p className="w3-center">Preencha os campos abaixo para se registrar como usuário:</p>
-                    <form className='w3-padding-large' method='POST' autoComplete='off' onSubmit={handleSubmit}>
+                    <form className='w3-padding-large' method='POST' autoComplete='off'>
                         <p>
-                            <label for="nome">Nome:</label>
+                            <label htmlFor="nome">Nome:</label>
                             <input className="w3-input w3-padding-16" type="text" id="nome" name="nome" onChange={(evt) => setNome(evt.target.value)} required/>
                         </p>
                         <p>
-                            <label for="cpf">CPF:</label>
+                            <label htmlFor="cpf">CPF:</label>
                             <input className="w3-input w3-padding-16" type="text" id="cpf" name="cpf" onChange={(evt) => setCpf(evt.target.value)} required/>
                         </p>
                         <p>
-                            <label for="email">Email:</label>
+                            <label htmlFor="email">Email:</label>
                             <input className="w3-input w3-padding-16" type="email" id="email" name="email" onChange={(evt) => setEmail(evt.target.value)} required/>
                         </p>
                         <p>
-                            <label for="login">Login:</label>
+                            <label htmlFor="login">Login:</label>
                             <input className="w3-input w3-padding-16" type="text" id="login" name="login" onChange={(evt) => setLogin(evt.target.value)} required/>
                         </p>
                         <p>
-                            <label for="senha">Senha:</label>
+                            <label htmlFor="senha">Senha:</label>
                             <input className="w3-input w3-padding-16" type="password" id="senha" name="senha" onChange={(evt) => setSenha(evt.target.value)} required/>
                         </p>
                         <p>
-                            <label for="senhaC">Confirme a sua Senha:</label>
+                            <label htmlFor="senhaC">Confirme a sua Senha:</label>
                             <input className="w3-input w3-padding-16" type="password" id="senhaC" name="senhaC" onChange={(evt) => setSenhaC(evt.target.value)} required/>  
                         </p>
                         <p>
-                            <button className="w3-button w3-light-grey w3-section" type="submit" >Fazer Cadastro</button>
+                            <button className="w3-button w3-light-grey w3-section" type="submit" formAction={PATH} onSubmit={(evt) => handleSubmit(evt)}>Fazer Cadastro</button>
                         </p>
                     </form>
                 </div>
