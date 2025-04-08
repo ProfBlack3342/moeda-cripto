@@ -40,31 +40,31 @@ function ProfilePage({port, currentUser, changeCurrentUser}) {
                     <p className="w3-center">Se desejar modificar algum dos seus dados, marque a caixa correspondente e complete abaixo:</p>
                     <form className='w3-padding-large' method='POST' autoComplete='off'>
                         <p>
-                            <label for="nome"><input type='checkbox' id='chkNome' name='chkNome'/> Nome:</label>
+                            <label htmlFor="nome"><input type='checkbox' id='chkNome' name='chkNome'/> Nome:</label>
                             <input className="w3-input w3-padding-16" type="text" id="nome" name="nome"/>
                         </p>
                         <p>
-                            <label for="cpf"><input type='checkbox' id='chkCpf' name='chkCpf'/> CPF:</label>
+                            <label htmlFor="cpf"><input type='checkbox' id='chkCpf' name='chkCpf'/> CPF:</label>
                             <input className="w3-input w3-padding-16" type="text" id="cpf" name="cpf"/>
                         </p>
                         <p>
-                            <label for="email"><input type='checkbox' id='chkEmail' name='chkEmail'/> Email:</label>
+                            <label htmlFor="email"><input type='checkbox' id='chkEmail' name='chkEmail'/> Email:</label>
                             <input className="w3-input w3-padding-16" type="email" id="email" name="email"/>
                         </p>
                         <p>
-                            <label for="senhaNova"><input type='checkbox' id='chkSenhaNova' name='chkSenhaNova'/> Nova Senha:</label>
+                            <label htmlFor="senhaNova"><input type='checkbox' id='chkSenhaNova' name='chkSenhaNova'/> Nova Senha:</label>
                             <input className="w3-input w3-padding-16" type="password" id="senhaNova" name="senhaNova"/>
                         </p>
                         <p>
-                            <label for="senhaNovaC">Confirme a sua Nova Senha:</label>
+                            <label htmlFor="senhaNovaC">Confirme a sua Nova Senha:</label>
                             <input className="w3-input w3-padding-16" type="password" id="senhaNovaC" name="senhaNovaC"/>  
                         </p>
                         <p>
-                            <label for="login">Login:</label>
+                            <label htmlFor="login">Login:</label>
                             <input className="w3-input w3-padding-16" type="text" id="login" name="login"/>
                         </p>
                         <p>
-                            <label for="senha">Senha Atual:</label>
+                            <label htmlFor="senha">Senha Atual:</label>
                             <input className="w3-input w3-padding-16" type="password" id="senha" name="senha" required/>
                         </p>
                         <p>
