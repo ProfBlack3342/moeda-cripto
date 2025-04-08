@@ -47,21 +47,20 @@ export class User {
         }
     }
 
-    #senha = 'senha';
+    #hash = 'hashSenha';
     get senha() {
-        return this.#senha;
+        return this.#hash;
     }
-    set senha(newSenha) {
-        switch(typeof newSenha) {
+    set senha(newHash) {
+        switch(typeof newHash) {
             case 'string':
-                // Tamanho em bytes da entrada, para evitar erros na geração do hash no backend.
-                const bytesSenha = (newSenha) => new Blob([newSenha]).size;
-                if(bytesSenha <= 72) {
-                    this.#senha = newSenha;
+                // Teste de tamanho, valor máximo é definido pela biblioteca Bcrypt E no banco de dados.
+                if(newHash <= 60) {
+                    this.#hash = newHash;
                     return true;
                 }
             default:
-                this.#senha = null;
+                this.#hash = null;
                 return false;
         }
     }
@@ -125,14 +124,14 @@ export class User {
     }
 
     toString() {
-        return `User -> ID = ${this.#id} || Login = ${this.#login} || Senha = ${this.#senha} || Nome = ${this.#nome} || CPF = ${this.#cpf} || Email = ${this.#email}\n`;
+        return `User -> ID = ${this.#id} || Login = ${this.#login} || Senha = ${this.#hash} || Nome = ${this.#nome} || CPF = ${this.#cpf} || Email = ${this.#email}\n`;
     }
 
     toJson() {
         return {
                 id: this.#id,
                 login: this.#login,
-                senha: this.#senha,
+                senha: this.#hash,
                 nome: this.#nome,
                 cpf: this.#cpf,
                 email: this.#email
