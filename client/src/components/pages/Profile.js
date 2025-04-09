@@ -20,6 +20,58 @@ function ProfilePage({port, currentUser, changeCurrentUser}) {
     const PATH = `http://localhost:${port}/api/profile`;
     const [data, setData] = useState(null);
 
+    const[formData, setFormData] = useState({
+        nome: '',
+        cpf: '',
+        email: '',
+        senhaNova: '',
+        senhaNovaC: '',
+        login: '',
+        senha: ''
+    });
+
+    const handleChange = (e) => {
+        setFormData({...formData, [e.target.name]: e.target.value});
+    };
+
+    const handleSubmit = async (formSubmitEvent) => {
+        formSubmitEvent.preventDefault();
+
+        try {
+
+            const response = await axios.post(PATH, formData);
+            
+            const user = new User();
+            user.id = response.data.id;
+            user.login = response.data.login;
+            user.hash = response.data.hash;
+            user.nome = response.data.nome;
+            user.cpf = response.data.cpf;
+            user.email = response.data.email;
+            changeCurrentUser(user);
+
+            console.log(user.toString());
+            window.alert('Atualização feita com sucesso!');
+            document.location.href = '/';
+            
+        } catch (error) {
+            if(error.response) {
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            }
+            else if (error.request)
+                console.log(error.request);
+            else 
+                console.log('Error', error.message);
+            
+            console.log(error.config);
+
+            window.alert('Erro ao atualizar o perfil!');
+            document.location.reload();
+        }
+    };
+
     useEffect(() => {
         // Requisição para a API do backend
         if(currentUser)
@@ -38,34 +90,34 @@ function ProfilePage({port, currentUser, changeCurrentUser}) {
                     <p className="w3-center">Login: {currentUser.login} - Senha (Hash): {currentUser.senha}</p>
                     <p className="w3-center">CPF: {currentUser.cpf} - Email: {currentUser.email}</p>
                     <p className="w3-center">Se desejar modificar algum dos seus dados, marque a caixa correspondente e complete abaixo:</p>
-                    <form className='w3-padding-large' method='POST' autoComplete='off'>
+                    <form id='profileForm' className='w3-padding-large' method='POST' autoComplete='off' onSubmit={handleSubmit}>
                         <p>
                             <label htmlFor="nome"><input type='checkbox' id='chkNome' name='chkNome'/> Nome:</label>
-                            <input className="w3-input w3-padding-16" type="text" id="nome" name="nome"/>
+                            <input className="w3-input w3-padding-16" type="text" id="nome" name="nome" placeholder='Digite o seu nome aqui' value={formData.nome} onChange={handleChange} />
                         </p>
                         <p>
                             <label htmlFor="cpf"><input type='checkbox' id='chkCpf' name='chkCpf'/> CPF:</label>
-                            <input className="w3-input w3-padding-16" type="text" id="cpf" name="cpf"/>
+                            <input className="w3-input w3-padding-16" type="text" id="cpf" name="cpf" placeholder='Digite o seu CPF aqui' value={formData.cpf} onChange={handleChange} />
                         </p>
                         <p>
                             <label htmlFor="email"><input type='checkbox' id='chkEmail' name='chkEmail'/> Email:</label>
-                            <input className="w3-input w3-padding-16" type="email" id="email" name="email"/>
+                            <input className="w3-input w3-padding-16" type="email" id="email" name="email" placeholder='Digite o seu Email aqui' value={formData.email} onChange={handleChange} />
                         </p>
                         <p>
                             <label htmlFor="senhaNova"><input type='checkbox' id='chkSenhaNova' name='chkSenhaNova'/> Nova Senha:</label>
-                            <input className="w3-input w3-padding-16" type="password" id="senhaNova" name="senhaNova"/>
+                            <input className="w3-input w3-padding-16" type="password" id="senhaNova" name="senhaNova" placeholder='Digite uma senha nova aqui' value={formData.senhaNova} onChange={handleChange} />
                         </p>
                         <p>
                             <label htmlFor="senhaNovaC">Confirme a sua Nova Senha:</label>
-                            <input className="w3-input w3-padding-16" type="password" id="senhaNovaC" name="senhaNovaC"/>  
+                            <input className="w3-input w3-padding-16" type="password" id="senhaNovaC" name="senhaNovaC" placeholder='Confirme a sua senha nova aqui' value={formData.senhaNovaC} onChange={handleChange} />  
                         </p>
                         <p>
                             <label htmlFor="login">Login:</label>
-                            <input className="w3-input w3-padding-16" type="text" id="login" name="login"/>
+                            <input className="w3-input w3-padding-16" type="text" id="login" name="login" placeholder='Digite o seu login aqui' value={formData.login} onChange={handleChange} required/>
                         </p>
                         <p>
                             <label htmlFor="senha">Senha Atual:</label>
-                            <input className="w3-input w3-padding-16" type="password" id="senha" name="senha" required/>
+                            <input className="w3-input w3-padding-16" type="password" id="senha" name="senha" placeholder='Digite a sua senha atual aqui' value={formData.senha} onChange={handleChange} required/>
                         </p>
                         <p>
                             <button className="w3-button w3-light-grey w3-section" type="submit" >Atualizar seu Cadastro</button>
