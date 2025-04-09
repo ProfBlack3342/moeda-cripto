@@ -23,6 +23,7 @@ const PATHS_DB_USER = {
     update: PATHS_API.profile + '/update',
     delete: PATHS_API.profile + '/delete'
 };
+const BCRYPT_SALTROUNDS = 12;
 
 // Instanciando uma aplicação Express e atribuindo os Middlewares
 const server = express();
@@ -59,15 +60,8 @@ server.post(PATHS_API.register, (req, res) => {
     const {nome, cpf, email, login, senha, senhaC} = req.body;
 
     if(!login || !senha || !senhaC || !nome || !cpf || !email)
-        return res.status(400).send(`Preencha todos os campos! \n
-            Login: ${login ? login : ''}\n
-            Senha: ${senha ? senha : ''}\n
-            SenhaC:${senhaC ? senhaC : ''}\n
-            Nome: ${nome ? nome : ''}\n
-            CPF:${cpf ? cpf : ''}\n
-            Email:${email ? email : ''}`);
+        return res.status(400).send(`<p>Preencha todos os campos!</p>`);
     else {
-
         if(senha != senhaC)
             return res.status(400).send('A senha e a sua confirmação devem ter valores iguais!');
         else {
@@ -76,29 +70,33 @@ server.post(PATHS_API.register, (req, res) => {
                 return res.status(400).send('A senha é muito grande!');
             else {
 
-                const hash = bcrypt.hash(senha, 12);
+                bcrypt.hash(senha, BCRYPT_SALTROUNDS, (hashingErr, hash) => {
+                    if(hashingErr instanceof Error)
+                        return res.status(500).send('Erro criando hash da senha.');
+                    else {
+                        db.execute('INSERT INTO `usuarios` (`login`, `senha`, `nome`, `cpf`, `email`) VALUES (?, ?, ?, ?, ?)', [login, hash, nome, cpf, email],
+                            (insertErr, insertResults) => {
 
-                db.execute('INSERT INTO usuarios (login, senha, nome, cpf, email) VALUES (?, ?, ?, ?, ?)', [login, hash, nome, cpf, email],
-                    (insertErr, insertResults) => {
+                                if(insertErr instanceof Error)
+                                    return res.status(500).send('Erro ao registrar o usuário no banco de dados.');
+                                else {
 
-                        if(insertErr)
-                            return res.status(500).send('Erro ao registrar o usuário no banco de dados.');
-                        else {
-
-                            if(insertResults.affectedRows > 0)
-                                res.status(200).json({
-                                    id: insertResults.insertId,
-                                    login,
-                                    hash,
-                                    nome,
-                                    cpf,
-                                    email
-                                });
-                            else 
-                                return res.status(500).send('Erro no banco de dados.');
-                        }
+                                    if(insertResults.affectedRows > 0)
+                                        res.status(200).json({
+                                            id: insertResults.insertId,
+                                            login,
+                                            hash,
+                                            nome,
+                                            cpf,
+                                            email
+                                        });
+                                    else 
+                                        return res.status(500).send('Erro no banco de dados.');
+                                }
+                            }
+                        );
                     }
-                );
+                });
             }
         }
     }
@@ -117,29 +115,36 @@ server.post(PATHS_API.login, (req, res) => {
         return res.status(400).send('Preencha todos os campos!');
     else {
 
-        db.execute('SELECT * FROM usuarios WHERE login = ?', [login],
+        db.execute('SELECT * FROM `usuarios` WHERE `login` = ?', [login],
             async (selectErr, selectResults) => {
 
-                if(selectErr)
+                if(selectErr instanceof Error)
                     return res.status(500).send('Erro ao pesquisar o usuário no banco de dados.');
                 else {
 
                     if(selectResults.length > 0) {
 
                         const hashBanco = selectResults[0].senha;
-                        const isMatch = await bcrypt.compare(senha, hashBanco);
 
-                        if(isMatch) 
-                            res.status(200).json({
-                                id: selectResults[0].id,
-                                login: selectResults[0].login,
-                                senha: hashBanco,
-                                nome: selectResults[0].nome,
-                                cpf: selectResults[0].cpf,
-                                email: selectResults[0].email
-                            });
-                        else 
-                            return res.status(400).send('Senha incorreta.');
+                        bcrypt.compare(senha, hashBanco, (hashCompareErr, isMatch) => {
+                            if(hashCompareErr instanceof Error) {
+                                return res.status(500).send('Erro durante a comparação de senha com hash');
+                            }
+                            else {
+                                if(isMatch){
+                                    res.status(200).json({
+                                        id: selectResults[0].id,
+                                        login: selectResults[0].login,
+                                        senha: hashBanco,
+                                        nome: selectResults[0].nome,
+                                        cpf: selectResults[0].cpf,
+                                        email: selectResults[0].email
+                                    });
+                                }
+                                else 
+                                    return res.status(400).send('Senha incorreta.');
+                            }
+                        });                        
                     }
                     else 
                         return res.status(500).send('Erro no banco de dados.');
@@ -174,120 +179,132 @@ server.post(PATHS_API.profile + '/:id', (req, res) => {
         return res.status(400).send('Informe o id na requisição e/ou preencha o login/senha!');
     else {
         // Verificar o login antes de tentar a atualização
-        db.execute('SELECT * FROM usuarios WHERE login = ?', [login],
+        db.execute('SELECT * FROM `usuarios` WHERE `login` = ?', [login],
             async (selectErr, selectResults) => {
 
                 if(selectErr)
                     return res.status(500).send('Erro ao pesquisar o usuário no banco de dados.');
                 else {
 
-                    if(results.length > 0) {
+                    if(selectResults.length > 0) {
 
-                        const isMatch = await bcrypt.compare(senha, selectResults[0].senha);
-                        if(isMatch) {
-                            // Se o login e senha estiverem corretos, montar a query e array de dados para o Update
-                            let statementQuery = 'UPDATE usuarios SET ';
-                            let statementArray = [];
-                            let change = false;
-
-                            if(Object.hasOwn(req.body, 'chkSenhaNova')) {
-
-                                if(!senhaNova || !senhaNovaC)
-                                    return res.status(400).send('Preencha ou desmarque o campo "Nova Senha"!');
-                                else {
-
-                                    if(senhaNova != senhaNovaC)
-                                        return res.status(400).send('A senha nova e a sua confirmação devem ter valores iguais!');
-                                    else {
-                                        statementArray.push(await bcrypt.hash(senhaNova, 12))
-                                        statementQuery += 'senha = ? ';
-                                        change = true;
-                                    }
-                                }
+                        bcrypt.compare(senha, hashBanco, (hashCompareErr, isMatch) => {
+                            if(hashCompareErr instanceof Error) {
+                                return res.status(500).send('Erro durante a comparação de senha com hash');
                             }
-                            if(Object.hasOwn(req.body, 'chkNome')) {
-
-                                if(!nome)
-                                    return res.status(400).send('Preencha ou desmarque o campo "Nome"!');
-                                else {
-
-                                    statementArray.push(nome);
-
-                                    if(change)
-                                        statementQuery += ', nome = ? ';
-                                    else {
-                                        statementQuery += 'nome = ? ';
-                                        change = true;
-                                    }
-                                }
-                            }
-                            if(Object.hasOwn(req.body, 'chkCpf')) {
-
-                                if(!cpf)
-                                    return res.status(400).send('Preencha ou desmarque o campo "CPF"!');
-                                else {
-
-                                    statementArray.push(cpf);
-
-                                    if(change)
-                                        statementQuery += ', cpf = ? ';
-                                    else {
-                                        statementQuery += 'cpf = ? ';
-                                        change = true;
-                                    }
-                                }
-                            }
-                            if(Object.hasOwn(req.body, 'chkEmail')) {
-
-                                if(!email)
-                                    return res.status(400).send('Preencha ou desmarque o campo "Email"!');
-                                else {
-
-                                    statementArray.push(email);
-
-                                    if(change)
-                                        statementQuery += ', email = ? ';
-                                    else {
-                                        statementQuery += 'email = ? ';
-                                        change = true;
-                                    }
-                                }
-                            }
-                            
-                            // Se nenhuma mudança foi marcada, encerrar aqui.
-                            // Se foram (e dados correspondentes foram informados), continuar para a execução.
-                            if(!change) 
-                                return res.status(400).send('Nenhum dado foi alterado!');
                             else {
+                                if(isMatch){
+                                    // Se o login e senha estiverem corretos, montar a query e array de dados para o Update
+                                    let statementQuery = 'UPDATE `usuarios` SET ';
+                                    let statementArray = [];
+                                    let change = false;
 
-                                statementQuery += 'WHERE id = ?';
-                                statementArray.push(id);
+                                    if(Object.hasOwn(req.body, 'chkSenhaNova')) {
 
-                                db.execute(statementQuery, statementArray,
-                                    (updateErr, updateResults) => {
-
-                                        if(updateErr)
-                                            return res.status(500).send('Erro ao registrar o usuário no banco de dados.');
+                                        if(!senhaNova || !senhaNovaC)
+                                            return res.status(400).send('Preencha ou desmarque o campo "Nova Senha"!');
                                         else {
 
-                                            if(updateResults.affectedRows > 0)
-                                                res.status(200).json({
-                                                    id,
-                                                    login,
-                                                    senha: updateResults[0].senha,
-                                                    nome,
-                                                    cpf,
-                                                    email
+                                            if(senhaNova != senhaNovaC)
+                                                return res.status(400).send('A senha nova e a sua confirmação devem ter valores iguais!');
+                                            else {
+                                                bcrypt.hash(senha, BCRYPT_SALTROUNDS, (hashingErr, hash) => {
+                                                    if(hashingErr instanceof Error)
+                                                        return res.status(500).send('Erro criando hash da senha.');
+                                                    else {
+                                                        statementArray.push(hash);
+                                                        statementQuery += '`senha` = ? ';
+                                                        change = true;
+                                                    }
                                                 });
-                                            else 
-                                                return res.status(500).send('Erro no banco de dados.');
+                                            }
                                         }
                                     }
-                                );
+                                    if(Object.hasOwn(req.body, 'chkNome')) {
+
+                                        if(!nome)
+                                            return res.status(400).send('Preencha ou desmarque o campo "Nome"!');
+                                        else {
+
+                                            statementArray.push(nome);
+
+                                            if(change)
+                                                statementQuery += ', `nome` = ? ';
+                                            else {
+                                                statementQuery += '`nome` = ? ';
+                                                change = true;
+                                            }
+                                        }
+                                    }
+                                    if(Object.hasOwn(req.body, 'chkCpf')) {
+
+                                        if(!cpf)
+                                            return res.status(400).send('Preencha ou desmarque o campo "CPF"!');
+                                        else {
+
+                                            statementArray.push(cpf);
+
+                                            if(change)
+                                                statementQuery += ', `cpf` = ? ';
+                                            else {
+                                                statementQuery += '`cpf` = ? ';
+                                                change = true;
+                                            }
+                                        }
+                                    }
+                                    if(Object.hasOwn(req.body, 'chkEmail')) {
+
+                                        if(!email)
+                                            return res.status(400).send('Preencha ou desmarque o campo "Email"!');
+                                        else {
+
+                                            statementArray.push(email);
+
+                                            if(change)
+                                                statementQuery += ', `email` = ? ';
+                                            else {
+                                                statementQuery += '`email` = ? ';
+                                                change = true;
+                                            }
+                                        }
+                                    }
+                                    
+                                    // Se nenhuma mudança foi marcada, encerrar aqui.
+                                    // Se foram (e dados correspondentes foram informados), continuar para a execução.
+                                    if(!change) 
+                                        return res.status(400).send('Nenhum dado foi alterado!');
+                                    else {
+
+                                        statementQuery += 'WHERE `id` = ?';
+                                        statementArray.push(id);
+
+                                        db.execute(statementQuery, statementArray,
+                                            (updateErr, updateResults) => {
+
+                                                if(updateErr instanceof Error)
+                                                    return res.status(500).send('Erro ao registrar o usuário no banco de dados.');
+                                                else {
+
+                                                    if(updateResults.affectedRows > 0)
+                                                        res.status(200).json({
+                                                            id,
+                                                            login,
+                                                            senha: updateResults[0].senha,
+                                                            nome,
+                                                            cpf,
+                                                            email
+                                                        });
+                                                    else 
+                                                        return res.status(500).send('Erro no banco de dados.');
+                                                }
+                                            }
+                                        );
+                                    }
+                                }
+                                else 
+                                    return res.status(400).send('Senha incorreta.');
                             }
-                        }
-                        else 
-                            return res.status(400).send('Senha incorreta.');
+                        });
                     }
                     else 
                         return res.status(500).send('Erro no banco de dados.');
@@ -302,7 +319,31 @@ server.get(PATHS_API.contact, (req, res) => {
     res.json({ message: 'Entre em Contato'});
 });
 server.post(PATHS_API.contact, (req, res) => {
-    res.json({ message: 'Entre em Contato'});
+    const {nome, email, assunto, mensagem} = req.body;
+
+    if(!nome || !email || !assunto || !mensagem)
+        return res.status(400).send(`<p>Preencha todos os campos!</p>`);
+    else {
+        db.execute('INSERT INTO `mensagens` (`nome`, `email`, `assunto`, `mensagem`) VALUES (?, ?, ?, ?)', [nome, email, assunto, mensagem],
+            (insertErr, insertResults) => {
+
+                if(insertErr instanceof Error)
+                    return res.status(500).send('Erro ao registrar a mensagem no banco de dados.');
+                else {
+
+                    if(insertResults.affectedRows > 0)
+                        res.status(200).json({
+                            nome,
+                            email,
+                            assunto,
+                            mensagem
+                        });
+                    else 
+                        return res.status(500).send('Erro no banco de dados.');
+                }
+            }
+        );
+    }
 });
 
 // Iniciando o servidor
