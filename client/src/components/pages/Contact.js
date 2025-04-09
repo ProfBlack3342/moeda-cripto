@@ -15,6 +15,43 @@ function ContactPage({port}) {
     const PATH = `http://localhost:${port}/api/contact`;
     const [data, setData] = useState(null);
 
+    const[formData, setFormData] = useState({
+        nome: '',
+        email: '',
+        assunto: '',
+        mensagem: ''
+    });
+
+    const handleChange = (e) => {
+        setFormData({...formData, [e.target.name]: e.target.value});
+    };
+
+    const handleSubmit = async (formSubmitEvent) => {
+        formSubmitEvent.preventDefault();
+
+        try {
+            const response = await axios.post(PATH, formData);
+
+            window.alert('Mensagem enviada com sucesso!\n' + response.data);
+            document.location.href = '/';
+        } catch (error) {
+            if(error.response) {
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            }
+            else if (error.request)
+                console.log(error.request);
+            else 
+                console.log('Error', error.message);
+            
+            console.log(error.config);
+            
+            window.alert('Erro ao enviar a mensagem!');
+            document.location.reload();
+        }
+    };
+
     useEffect(() => {
         // Requisição para a API do backend
         axios.get(PATH).then(response => setData(response.data)).catch(error => console.error('Erro ao buscar dados:', error));
@@ -26,23 +63,23 @@ function ContactPage({port}) {
                 <div className="w3-container w3-padding-64 w3-white w3-border w3-border-gray" id="contact">
                     <h1 className="w3-center">{data.message}</h1>
                     <p className="w3-center">Deixe aqui os seus dados se desejar entrar em contato conosco:</p>
-                    <form className='w3-padding-large'>
+                    <form id='contactForm' className='w3-padding-large' method='POST' autoComplete='off' onSubmit={handleSubmit}>
                         <p>
                         
                             <label htmlFor="nome">Nome:</label>
-                            <input className="w3-input w3-padding-16" type="text" id="nome" name="nome" required/>
+                            <input className="w3-input w3-padding-16" type="text" id="nome" name="nome" placeholder='Digite o seu nome aqui' value={formData.nome} onChange={handleChange} required/>
                         </p>
                         <p>
                             <label htmlFor="email">Email:</label>
-                            <input className="w3-input w3-padding-16" type="email" id="email" name="email" required/>
+                            <input className="w3-input w3-padding-16" type="email" id="email" name="email" placeholder='Digite o seu email aqui' value={formData.email} onChange={handleChange} required/>
                         </p>
                         <p>
                             <label htmlFor="assunto">Assunto:</label>
-                            <input className="w3-input w3-padding-16" type="text" id="assunto" name="assunto" required/>
+                            <input className="w3-input w3-padding-16" type="text" id="assunto" name="assunto" placeholder='Digite o assunto da mensagem aqui' value={formData.assunto} onChange={handleChange} required/>
                         </p>
                         <p>
                             <label htmlFor="msg">Mensagem:</label>
-                            <textarea className="w3-input w3-padding-16" type="text" id="msg" name="msg" rows={10} cols={50} required/>
+                            <textarea className="w3-input w3-padding-16" type="text" id="msg" name="msg" rows={10} cols={50} placeholder='Digite o conteúdo da mensagem aqui' value={formData.mensagem} onChange={handleChange} required/>
                         </p>
                         <p>
                             <button className="w3-button w3-light-grey w3-section" type="submit">Enviar</button>
