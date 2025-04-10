@@ -1,21 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import { User } from '../Classes.js';
+import { User as CurrentUser } from '../Classes'; 
 
 /**
  * Gera e retorna um bloco de código HTML que define a página de perfil
- * @param {Object} props - Um objeto contendo:
- * @param {Number} props.port - A porta da conexão com o servidor backend
- * @param {User | null} props.currentUser - O usuário atualmente logado, ou nulo se nenhum estiver.
- * @param {(newUser: User) => void} props.changeCurrentUser - A função que altera o usuário logado atualmente.
+ * @param {Number} port - A porta da conexão com o servidor backend
  * @returns Uma página HTML com perfil do usuário logado, ou um aviso se nenhum estiver
  * 
  * @author Eduardo Pereira Moreira <eduardopereiramoreira1995@gmail.com>
  * @since 1.0
  * @version 1.0
  */
-function ProfilePage({port, currentUser, changeCurrentUser}) {
+function ProfilePage({port}) {
 
     const PATH = `http://localhost:${port}/api/profile`;
     const [data, setData] = useState(null);
@@ -41,16 +38,14 @@ function ProfilePage({port, currentUser, changeCurrentUser}) {
 
             const response = await axios.post(PATH, formData);
             
-            const user = new User();
-            user.id = response.data.id;
-            user.login = response.data.login;
-            user.hash = response.data.hash;
-            user.nome = response.data.nome;
-            user.cpf = response.data.cpf;
-            user.email = response.data.email;
-            changeCurrentUser(user);
+            CurrentUser.clearData();
+            CurrentUser.id = response.data.id;
+            CurrentUser.login = response.data.login;
+            CurrentUser.hash = response.data.hash;
+            CurrentUser.nome = response.data.nome;
+            CurrentUser.cpf = response.data.cpf;
+            CurrentUser.email = response.data.email;
 
-            console.log(user.toString());
             window.alert('Atualização feita com sucesso!');
             document.location.href = '/';
             
@@ -74,21 +69,26 @@ function ProfilePage({port, currentUser, changeCurrentUser}) {
 
     useEffect(() => {
         // Requisição para a API do backend
-        if(currentUser)
-            axios.get(PATH + currentUser.id).then(response => setData(response.data)).catch(error => console.error('Erro ao buscar dados:', error));
+        if(CurrentUser.id)
+            axios.get(PATH + '/' + CurrentUser.id).then(response => setData(response.data)).catch(error => console.error('Erro ao buscar dados:', error));
         else
             document.location.href = '/';
     }, []);
+
+    useEffect(() => {
+        console.log('Carregando Profile.js -> Usuário Atual: ' + (CurrentUser.id ? CurrentUser.toString() : 'Vazio'));
+        return console.log('Fechando Profile.js -> Usuário Atual: ' + (CurrentUser.id ? CurrentUser.toString() : 'Vazio'));
+      });
     
     return(
-        <> {data && currentUser
+        <> {data && CurrentUser.id
             ? <>
                 <div className="w3-container w3-padding-64 w3-white w3-border w3-border-gray" id="profile">
                     <h1 className="w3-center">{data.message}</h1>
                     <p className="w3-center">Dados do Usuário:</p>
-                    <p className="w3-center">ID #{currentUser.id} - Nome:{currentUser.nome}</p>
-                    <p className="w3-center">Login: {currentUser.login} - Senha (Hash): {currentUser.senha}</p>
-                    <p className="w3-center">CPF: {currentUser.cpf} - Email: {currentUser.email}</p>
+                    <p className="w3-center">ID #{CurrentUser.id} - Login: {CurrentUser.login}</p>
+                    <p className="w3-center">Nome:{CurrentUser.nome}</p>
+                    <p className="w3-center">CPF: {CurrentUser.cpf} - Email: {CurrentUser.email}</p>
                     <p className="w3-center">Se desejar modificar algum dos seus dados, marque a caixa correspondente e complete abaixo:</p>
                     <form id='profileForm' className='w3-padding-large' method='POST' autoComplete='off' onSubmit={handleSubmit}>
                         <p>
