@@ -17,12 +17,6 @@ const PATHS_API = {
     profile: '/api/profile',
     contact: '/api/contact'
 };
-const PATHS_DB_USER = {
-    create: PATHS_API.register + '/create',
-    read: PATHS_API.login + '/read',
-    update: PATHS_API.profile + '/update',
-    delete: PATHS_API.profile + '/delete'
-};
 const BCRYPT_SALTROUNDS = 12;
 
 // Instanciando uma aplicação Express e atribuindo os Middlewares
