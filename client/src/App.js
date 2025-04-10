@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import { User } from './components/Classes';
+import { User as CurrentUser } from './components/Classes';
 
 import HomePage from './components/pages/Home';
 import RegisterPage from './components/pages/Register';
@@ -21,15 +21,13 @@ const PATHS = {
 /**
  * Gera e retorna um bloco de código HTML que define o topo do site
  * 
- * @param {Object} userState - Um objeto contendo:
- * @param {User | null} userState.currentUser - O usuário atualmente logado, ou nulo se nenhum estiver.
  * @returns O código HTML de uma navbar + elemento <header> da página.
  * 
  * @author Eduardo Pereira Moreira <eduardopereiramoreira1995@gmail.com>
  * @since 1.0
  * @version 1.0
  */
-function TopoHTML({currentUser}) {
+function TopoHTML() {
 
   return(
     <>
@@ -40,7 +38,7 @@ function TopoHTML({currentUser}) {
           </a>
           <div className="w3-right w3-hide-small">
             <a href={PATHS.home} className="w3-bar-item w3-button">Home</a>
-            {currentUser instanceof User
+            {CurrentUser.id
               ? <><a href={PATHS.profile} className="w3-bar-item w3-button">Seu Perfil</a><a href={PATHS.home} className="w3-bar-item w3-button">Sair do Usuário</a></>
               : <><a href={PATHS.register} className="w3-bar-item w3-button">Criar Conta</a><a href={PATHS.login} className="w3-bar-item w3-button">Fazer Login</a></>
             }
@@ -61,24 +59,21 @@ function TopoHTML({currentUser}) {
 /**
  * Gera e retorna um bloco de código HTML que define o conteúdo principal do site
  * 
- * @param {Object} props - Um objeto contendo:
- * @param {User | null} props.currentUser - O usuário atualmente logado, ou nulo se nenhum estiver.
- * @param {(newUser: User) => void} props.changeCurrentUser - A função que altera o usuário logado atualmente.
  * @returns O código HTML com o conteúdo da página
  * 
  * @author Eduardo Pereira Moreira <eduardopereiramoreira1995@gmail.com>
  * @since 1.0
  * @version 1.0
  */
-function ConteudoHTML({currentUser, changeCurrentUser}) {
+function ConteudoHTML() {
 
   return(
     <div className="w3-content" style={{'maxWidth':'1100px'}}>
       <Routes>
         <Route path={PATHS.home} element={<HomePage port={PORT}/>}/>
-        <Route path={PATHS.register} element={<RegisterPage port={PORT} currentUser={currentUser} changeCurrentUser={changeCurrentUser}/>}/>
-        <Route path={PATHS.login} element={<LoginPage port={PORT} currentUser={currentUser} changeCurrentUser={changeCurrentUser}/>}/>
-        <Route path={PATHS.profile} element={<ProfilePage port={PORT} currentUser={currentUser} changeCurrentUser={changeCurrentUser}/>}/>
+        <Route path={PATHS.register} element={<RegisterPage port={PORT}/>}/>
+        <Route path={PATHS.login} element={<LoginPage port={PORT}/>}/>
+        <Route path={PATHS.profile} element={<ProfilePage port={PORT}/>}/>
         <Route path={PATHS.contact} element={<ContactPage port={PORT}/>}/>
       </Routes>
     </div>
@@ -153,20 +148,20 @@ function FooterHTML() {
  */
 function App() {
 
-  const [currentUser, setCurrentUser] = useState(null);
-  const changeCurrentUser = (newUser) => {
-    setCurrentUser(newUser);
-  };
+  useEffect(() => {
+    console.log('Carregando App.js -> Usuário Atual: ' + (CurrentUser.id ? CurrentUser.toString() : 'Vazio'));
+    return console.log('Fechando App.js -> Usuário Atual: ' + (CurrentUser.id ? CurrentUser.toString() : 'Vazio'));
+  });
 
   return (
     <Router>
 
       <div className='w3-black w3-padding-64'>
-        <TopoHTML currentUser={currentUser}/>
+        <TopoHTML/>
       </div>
         
       <div className='w3-light-gray w3-topbar w3-bottombar w3-padding-64'>
-        <ConteudoHTML currentUser={currentUser} changeCurrentUser={changeCurrentUser}/>
+        <ConteudoHTML/>
       </div>
 
       <div>
