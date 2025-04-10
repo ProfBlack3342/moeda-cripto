@@ -1,21 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import { User } from '../Classes.js';
+import { User as CurrentUser } from '../Classes'; 
 
 /**
  * Gera e retorna um bloco de código HTML que define a página de registro
- * @param {Object} props - Um objeto contendo:
- * @param {Number} props.port - A porta da conexão com o servidor backend
- * @param {User | null} props.currentUser - O usuário atualmente logado, ou nulo se nenhum estiver.
- * @param {(newUser: User) => void} props.changeCurrentUser - A função que altera o usuário logado atualmente.
+ * @param {Number} port - A porta da conexão com o servidor backend
  * @returns Uma página HTML para registrar um usuário novo
  * 
  * @author Eduardo Pereira Moreira <eduardopereiramoreira1995@gmail.com>
  * @since 1.0
  * @version 1.0
  */
-function RegisterPage({port, currentUser, changeCurrentUser}) {
+function RegisterPage({port}) {
 
     const PATH = `http://localhost:${port}/api/register`;
     const [data, setData] = useState(null);
@@ -40,16 +37,13 @@ function RegisterPage({port, currentUser, changeCurrentUser}) {
 
             const response = await axios.post(PATH, formData);
             
-            const user = new User();
-            user.id = response.data.id;
-            user.login = response.data.login;
-            user.hash = response.data.hash;
-            user.nome = response.data.nome;
-            user.cpf = response.data.cpf;
-            user.email = response.data.email;
-            changeCurrentUser(user);
+            CurrentUser.id = response.data.id;
+            CurrentUser.login = response.data.login;
+            CurrentUser.hash = response.data.hash;
+            CurrentUser.nome = response.data.nome;
+            CurrentUser.cpf = response.data.cpf;
+            CurrentUser.email = response.data.email;
 
-            console.log(user.toString());
             window.alert('Cadastro feito com sucesso!');
             document.location.href = '/';
             
@@ -73,20 +67,19 @@ function RegisterPage({port, currentUser, changeCurrentUser}) {
 
     useEffect(() => {
         // Requisição para a API do backend
-        if(currentUser)
+        if(CurrentUser.id)
             document.location.href = '/';
         else
             axios.get(PATH).then(response => setData(response.data)).catch(error => console.error('Erro ao buscar dados:', error));
     }, []);
 
     useEffect(() => {
-        return() => {
-            document.location.href = '/';
-        };
-    }, [currentUser]);
+        console.log('Carregando Register.js -> Usuário Atual: ' + (CurrentUser.id ? CurrentUser.toString() : 'Vazio'));
+        return console.log('Fechando Register.js -> Usuário Atual: ' + (CurrentUser.id ? CurrentUser.toString() : 'Vazio'));
+      });
 
     return(
-        <> {data && !currentUser
+        <> {data && !CurrentUser.id
             ? <>
                 <div className="w3-container w3-padding-64 w3-white w3-border w3-border-gray" id="register">
                     <h1 className="w3-center">{data.message}</h1>
