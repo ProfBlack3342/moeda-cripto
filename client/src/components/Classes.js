@@ -6,12 +6,13 @@
  * @version 1.0
  */
 export class User {
-    #id = -1;
+    
+    static #id = null;
 
-    get id() {
+    static get id() {
         return this.#id;
     }
-    set id(newId) {
+    static set id(newId) {
         let newIdNum = newId;   // Cópia da entrada para testes
         switch(typeof newId) {
             case 'string':
@@ -29,11 +30,11 @@ export class User {
         }
     }
 
-    #login = 'login';
-    get login() {
+    static #login = null;
+    static get login() {
         return this.#login;
     }
-    set login(newLogin) {
+    static set login(newLogin) {
         switch(typeof newLogin) {
             case 'string':
                 // Teste de tamanho, valor máximo é definido no banco de dados.
@@ -47,11 +48,11 @@ export class User {
         }
     }
 
-    #hash = 'hashSenha';
-    get senha() {
+    static #hash = null;
+    static get senha() {
         return this.#hash;
     }
-    set senha(newHash) {
+    static set senha(newHash) {
         switch(typeof newHash) {
             case 'string':
                 // Teste de tamanho, valor máximo é definido pela biblioteca Bcrypt E no banco de dados.
@@ -65,11 +66,11 @@ export class User {
         }
     }
 
-    #nome = 'nome';
-    get nome() {
+    static #nome = null;
+    static get nome() {
         return this.#nome;
     }
-    set nome(newNome) {
+    static set nome(newNome) {
         switch(typeof newNome) {
             case 'string':
                 // Teste de tamanho, valor máximo é definido no banco de dados.
@@ -83,11 +84,11 @@ export class User {
         }
     }
 
-    #cpf = 'cpf';
-    get cpf() {
+    static #cpf = null;
+    static get cpf() {
         return this.#cpf;
     }
-    set cpf(newCpf) {
+    static set cpf(newCpf) {
         let newCpfString = newCpf;  // Cópia da entrada para testes
         switch(typeof newCpf) {
             case 'number':
@@ -105,11 +106,11 @@ export class User {
         }
     }
 
-    #email = 'email';
-    get email() {
+    static #email = null;
+    static get email() {
         return this.#email;
     }
-    set email(newEmail) {
+    static set email(newEmail) {
         switch(typeof newEmail) {
             case 'string':
                 // Teste de tamanho, valor máximo é definido no banco de dados.
@@ -123,11 +124,20 @@ export class User {
         }
     }
 
-    toString() {
+    static clearData() {
+        this.#id = null;
+        this.#login = null;
+        this.#hash = null;
+        this.#nome = null;
+        this.#cpf = null;
+        this.#email = null;
+    }
+
+    static toString() {
         return `User -> ID = ${this.#id} || Login = ${this.#login} || Senha = ${this.#hash} || Nome = ${this.#nome} || CPF = ${this.#cpf} || Email = ${this.#email}\n`;
     }
 
-    toJson() {
+    static toJson() {
         return {
                 id: this.#id,
                 login: this.#login,
