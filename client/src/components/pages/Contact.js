@@ -32,7 +32,7 @@ function ContactPage({port}) {
         try {
             const response = await axios.post(PATH, formData);
 
-            window.alert('Mensagem enviada com sucesso!\n' + response.data);
+            window.alert('Mensagem enviada com sucesso!');
             document.location.href = '/';
         } catch (error) {
             if(error.response) {
@@ -66,11 +66,11 @@ function ContactPage({port}) {
                     <form id='contactForm' className='w3-padding-large' method='POST' autoComplete='off' onSubmit={handleSubmit}>
                         <p>
                         
-                            <label htmlFor="nome">Nome:</label>
+                            <label htmlFor="nome">Seu Nome:</label>
                             <input className="w3-input w3-padding-16" type="text" id="nome" name="nome" placeholder='Digite o seu nome aqui' value={formData.nome} onChange={handleChange} required/>
                         </p>
                         <p>
-                            <label htmlFor="email">Email:</label>
+                            <label htmlFor="email">Seu Email:</label>
                             <input className="w3-input w3-padding-16" type="email" id="email" name="email" placeholder='Digite o seu email aqui' value={formData.email} onChange={handleChange} required/>
                         </p>
                         <p>
@@ -78,8 +78,8 @@ function ContactPage({port}) {
                             <input className="w3-input w3-padding-16" type="text" id="assunto" name="assunto" placeholder='Digite o assunto da mensagem aqui' value={formData.assunto} onChange={handleChange} required/>
                         </p>
                         <p>
-                            <label htmlFor="msg">Mensagem:</label>
-                            <textarea className="w3-input w3-padding-16" type="text" id="msg" name="msg" rows={10} cols={50} placeholder='Digite o conteúdo da mensagem aqui' value={formData.mensagem} onChange={handleChange} required/>
+                            <label htmlFor="mensagem">Mensagem:</label>
+                            <textarea className="w3-input w3-padding-16" id="mensagem" name="mensagem" rows={10} cols={50} placeholder='Digite o conteúdo da mensagem aqui' value={formData.mensagem} onChange={handleChange} required/>
                         </p>
                         <p>
                             <button className="w3-button w3-light-grey w3-section" type="submit">Enviar</button>
