@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import { User as CurrentUser } from '../Classes'; 
+import UseCookie from '../ReactCookies';
 
 /**
  * Gera e retorna um bloco de código HTML que define a página de perfil
@@ -12,7 +12,7 @@ import { User as CurrentUser } from '../Classes';
  * @since 1.0
  * @version 1.0
  */
-function ProfilePage({port}) {
+function ProfilePage({port, userId, funcChangeId, funcChangeLogin, funcChangeHash, funcChangeNome, funcChangeCpf, funcChangeEmail}) {
 
     const PATH = `http://localhost:${port}/api/profile`;
     const [data, setData] = useState(null);
@@ -38,16 +38,15 @@ function ProfilePage({port}) {
 
             const response = await axios.post(PATH, formData);
             
-            CurrentUser.clearData();
-            CurrentUser.id = response.data.id;
-            CurrentUser.login = response.data.login;
-            CurrentUser.hash = response.data.hash;
-            CurrentUser.nome = response.data.nome;
-            CurrentUser.cpf = response.data.cpf;
-            CurrentUser.email = response.data.email;
+            funcChangeId(response.data.id);
+            funcChangeLogin(response.data.login);
+            funcChangeHash(response.data.hash);
+            funcChangeNome(response.data.nome);
+            funcChangeCpf(response.data.cpf);
+            funcChangeEmail(response.data.email);
 
-            window.alert('Atualização feita com sucesso!');
-            document.location.href = '/';
+            window.alert('Atualização feita com sucesso!\nFaça login novamente...');
+            document.location.href = '/login';
             
         } catch (error) {
             if(error.response) {
@@ -69,26 +68,21 @@ function ProfilePage({port}) {
 
     useEffect(() => {
         // Requisição para a API do backend
-        if(CurrentUser.id)
-            axios.get(PATH + '/' + CurrentUser.id).then(response => setData(response.data)).catch(error => console.error('Erro ao buscar dados:', error));
+        if(userId != '')
+            axios.get(PATH + `/${userId}`).then(response => setData(response.data)).catch(error => console.error('Erro ao buscar dados:', error));
         else
             document.location.href = '/';
     }, []);
-
-    useEffect(() => {
-        console.log('Carregando Profile.js -> Usuário Atual: ' + (CurrentUser.id ? CurrentUser.toString() : 'Vazio'));
-        return console.log('Fechando Profile.js -> Usuário Atual: ' + (CurrentUser.id ? CurrentUser.toString() : 'Vazio'));
-      });
     
     return(
-        <> {data && CurrentUser.id
+        <> {data && userId != ''
             ? <>
                 <div className="w3-container w3-padding-64 w3-white w3-border w3-border-gray" id="profile">
                     <h1 className="w3-center">{data.message}</h1>
                     <p className="w3-center">Dados do Usuário:</p>
-                    <p className="w3-center">ID #{CurrentUser.id} - Login: {CurrentUser.login}</p>
-                    <p className="w3-center">Nome:{CurrentUser.nome}</p>
-                    <p className="w3-center">CPF: {CurrentUser.cpf} - Email: {CurrentUser.email}</p>
+                    <p className="w3-center">ID #{userId} - Login: {loginUsuario}</p>
+                    <p className="w3-center">Nome:{nomeUsuario}</p>
+                    <p className="w3-center">CPF: {cpfUsuario} - Email: {emailUsuario}</p>
                     <p className="w3-center">Se desejar modificar algum dos seus dados, marque a caixa correspondente e complete abaixo:</p>
                     <form id='profileForm' className='w3-padding-large' method='POST' autoComplete='off' onSubmit={handleSubmit}>
                         <p>
