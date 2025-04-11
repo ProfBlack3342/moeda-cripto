@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import { User as CurrentUser } from '../Classes'; 
+import UseCookie from '../ReactCookies';
 
 /**
  * Gera e retorna um bloco de código HTML que define a página de login
@@ -12,7 +12,7 @@ import { User as CurrentUser } from '../Classes';
  * @since 1.0
  * @version 1.0
  */
-function LoginPage({port}) {
+function LoginPage({port, userId, funcChangeId, funcChangeLogin, funcChangeHash, funcChangeNome, funcChangeCpf, funcChangeEmail}) {
 
     const PATH = `http://localhost:${port}/api/login`;
     const [data, setData] = useState(null);
@@ -33,15 +33,17 @@ function LoginPage({port}) {
 
             const response = await axios.post(PATH, formData);
 
-            CurrentUser.id = response.data.id;
-            CurrentUser.login = response.data.login;
-            CurrentUser.hash = response.data.hash;
-            CurrentUser.nome = response.data.nome;
-            CurrentUser.cpf = response.data.cpf;
-            CurrentUser.email = response.data.email;
+            document.cookie ="name=; expires=Fri, 31 Dec 2023 23:59:59 GMT; path=/";
+
+            funcChangeId(response.data.id);
+            funcChangeLogin(response.data.login);
+            funcChangeHash(response.data.hash);
+            funcChangeNome(response.data.nome);
+            funcChangeCpf(response.data.cpf);
+            funcChangeEmail(response.data.email);
 
             window.alert('Login feito com sucesso!');
-            document.location.href = '/';
+            document.location.href = `/profile/${userId}`;
             
         } catch (error) {
             if(error.response) {
@@ -63,24 +65,14 @@ function LoginPage({port}) {
 
     useEffect(() => {
         // Requisição para a API do backend
-        if(CurrentUser.id)
-            document.location.href = '/';
+        if(userId != '')
+            document.location.href = `/profile/${userId}`;
         else
             axios.get(PATH).then(response => setData(response.data)).catch(error => console.error('Erro ao buscar dados:', error));
     }, []);
 
-    useEffect(() => {
-        console.log('Carregando Login.js -> Usuário Atual: ' + (CurrentUser.id ? CurrentUser.toString() : 'Vazio'));
-        window.alert('Carregando Login.js');
-        return () => {
-            console.log('Fechando Login.js -> Usuário Atual: ' + (CurrentUser.id ? CurrentUser.toString() : 'Vazio'));
-            window.alert('Fechando Login.js');
-        }
-        
-    }, [CurrentUser.login, CurrentUser.senha]);
-
     return(
-        <> {data && !CurrentUser.id
+        <> {data && (userId === '')
             ? <>
                 <div className="w3-container w3-padding-64 w3-white w3-border w3-border-gray" id="login">
                     <h1 className="w3-center">{data.message}</h1>
