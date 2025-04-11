@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import { User as CurrentUser } from './components/Classes';
+import UseCookie from './components/ReactCookies';
 
 import HomePage from './components/pages/Home';
 import RegisterPage from './components/pages/Register';
@@ -27,7 +27,17 @@ const PATHS = {
  * @since 1.0
  * @version 1.0
  */
-function TopoHTML() {
+function TopoHTML({userId, funcDeleteId, funcDeleteLogin, funcDeleteHash, funcDeleteNome, funcDeleteCpf, funcDeleteEmail}) {
+
+  const fazerLogoff = () => {
+    funcDeleteLogin();
+    funcDeleteHash();
+    funcDeleteNome();
+    funcDeleteCpf();
+    funcDeleteEmail();
+
+    funcDeleteId();
+  };
 
   return(
     <>
@@ -38,8 +48,8 @@ function TopoHTML() {
           </a>
           <div className="w3-right w3-hide-small">
             <a href={PATHS.home} className="w3-bar-item w3-button">Home</a>
-            {CurrentUser.id
-              ? <><a href={PATHS.profile} className="w3-bar-item w3-button">Seu Perfil</a><a href={PATHS.home} className="w3-bar-item w3-button">Sair do Usuário</a></>
+            {userId != ''
+              ? <><a href={PATHS.profile} className="w3-bar-item w3-button">Seu Perfil</a><a href={PATHS.home} className="w3-bar-item w3-button" onClick={fazerLogoff}>Sair do Usuário</a></>
               : <><a href={PATHS.register} className="w3-bar-item w3-button">Criar Conta</a><a href={PATHS.login} className="w3-bar-item w3-button">Fazer Login</a></>
             }
             <a href={PATHS.contact} className="w3-bar-item w3-button">Contato</a>
@@ -65,16 +75,57 @@ function TopoHTML() {
  * @since 1.0
  * @version 1.0
  */
-function ConteudoHTML() {
+function ConteudoHTML({userId, funcChangeId, funcChangeLogin, funcChangeHash, funcChangeNome, funcChangeCpf, funcChangeEmail}) {
 
   return(
     <div className="w3-content" style={{'maxWidth':'1100px'}}>
       <Routes>
-        <Route path={PATHS.home} element={<HomePage port={PORT}/>}/>
-        <Route path={PATHS.register} element={<RegisterPage port={PORT}/>}/>
-        <Route path={PATHS.login} element={<LoginPage port={PORT}/>}/>
-        <Route path={PATHS.profile} element={<ProfilePage port={PORT}/>}/>
-        <Route path={PATHS.contact} element={<ContactPage port={PORT}/>}/>
+        <Route path={PATHS.home} element={
+          <HomePage
+            port={PORT}
+          />}
+        />
+        <Route path={PATHS.register} element={
+          <RegisterPage
+            port={PORT}
+            userId={userId}
+            funcChangeId={funcChangeId}
+            funcChangeLogin={funcChangeLogin}
+            funcChangeHash={funcChangeHash}
+            funcChangeNome={funcChangeNome}
+            funcChangeCpf={funcChangeCpf}
+            funcChangeEmail={funcChangeEmail}
+          />}
+        />
+        <Route path={PATHS.login} element={
+          <LoginPage
+            port={PORT}
+            userId={userId}
+            funcChangeId={funcChangeId}
+            funcChangeLogin={funcChangeLogin}
+            funcChangeHash={funcChangeHash}
+            funcChangeNome={funcChangeNome}
+            funcChangeCpf={funcChangeCpf}
+            funcChangeEmail={funcChangeEmail}
+          />}
+        />
+        <Route path={PATHS.profile} element={
+          <ProfilePage
+            port={PORT}
+            userId={userId}
+            funcChangeId={funcChangeId}
+            funcChangeLogin={funcChangeLogin}
+            funcChangeHash={funcChangeHash}
+            funcChangeNome={funcChangeNome}
+            funcChangeCpf={funcChangeCpf}
+            funcChangeEmail={funcChangeEmail}
+          />}
+        />
+        <Route path={PATHS.contact} element={
+          <ContactPage
+            port={PORT}
+          />}
+        />
       </Routes>
     </div>
   );
@@ -148,20 +199,42 @@ function FooterHTML() {
  */
 function App() {
 
+  const [idUsuario, setIdUsuario, deleteIdUsuario] = UseCookie("user.id");
+  const [loginUsuario, setLoginUsuario, deleteLoginUsuario] = UseCookie("user.login");
+  const [hashUsuario, setHashUsuario, deleteHashUsuario] = UseCookie("user.hash");
+  const [nomeUsuario, setNomeUsuario, deleteNomeUsuario] = UseCookie("user.nome");
+  const [cpfUsuario, setCpfUsuario, deleteCpfUsuario] = UseCookie("user.cpf");
+  const [emailUsuario, setEmailUsuario, deleteEmailUsuario] = UseCookie("user.email");
+
   useEffect(() => {
-    console.log('Carregando App.js -> Usuário Atual: ' + (CurrentUser.id ? CurrentUser.toString() : 'Vazio'));
-    return console.log('Fechando App.js -> Usuário Atual: ' + (CurrentUser.id ? CurrentUser.toString() : 'Vazio'));
-  });
+    console.log(`ID: ${idUsuario}; Login: ${loginUsuario}; Hash: ${hashUsuario}; Nome: ${nomeUsuario}; CPF: ${cpfUsuario}; Email: ${emailUsuario}`)
+}, []);
 
   return (
     <Router>
 
       <div className='w3-black w3-padding-64'>
-        <TopoHTML/>
+        <TopoHTML
+          userId={idUsuario}
+          funcDeleteId={deleteIdUsuario}
+          funcDeleteLogin={deleteLoginUsuario}
+          funcDeleteHash={deleteHashUsuario}
+          funcDeleteNome={deleteNomeUsuario}
+          funcDeleteCpf={deleteCpfUsuario}
+          funcDeleteEmail={deleteEmailUsuario}
+        />
       </div>
         
       <div className='w3-light-gray w3-topbar w3-bottombar w3-padding-64'>
-        <ConteudoHTML/>
+        <ConteudoHTML
+          userId={idUsuario}
+          funcChangeId={setIdUsuario}
+          funcChangeLogin={setLoginUsuario}
+          funcChangeHash={setHashUsuario}
+          funcChangeNome={setNomeUsuario}
+          funcChangeCpf={setCpfUsuario}
+          funcChangeEmail={setEmailUsuario}
+        />
       </div>
 
       <div>
