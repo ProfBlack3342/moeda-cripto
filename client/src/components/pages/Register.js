@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import { User as CurrentUser } from '../Classes'; 
+import UseCookie from '../ReactCookies';
 
 /**
  * Gera e retorna um bloco de código HTML que define a página de registro
@@ -12,7 +12,7 @@ import { User as CurrentUser } from '../Classes';
  * @since 1.0
  * @version 1.0
  */
-function RegisterPage({port}) {
+function RegisterPage({port, userId, funcChangeId, funcChangeLogin, funcChangeHash, funcChangeNome, funcChangeCpf, funcChangeEmail}) {
 
     const PATH = `http://localhost:${port}/api/register`;
     const [data, setData] = useState(null);
@@ -37,15 +37,15 @@ function RegisterPage({port}) {
 
             const response = await axios.post(PATH, formData);
             
-            CurrentUser.id = response.data.id;
-            CurrentUser.login = response.data.login;
-            CurrentUser.hash = response.data.hash;
-            CurrentUser.nome = response.data.nome;
-            CurrentUser.cpf = response.data.cpf;
-            CurrentUser.email = response.data.email;
+            funcChangeId(response.data.id);
+            funcChangeLogin(response.data.login);
+            funcChangeHash(response.data.hash);
+            funcChangeNome(response.data.nome);
+            funcChangeCpf(response.data.cpf);
+            funcChangeEmail(response.data.email);
 
             window.alert('Cadastro feito com sucesso!');
-            document.location.href = '/';
+            document.location.href = `/profile/${userId}`;
             
         } catch (error) {
             if(error.response) {
@@ -67,19 +67,14 @@ function RegisterPage({port}) {
 
     useEffect(() => {
         // Requisição para a API do backend
-        if(CurrentUser.id)
-            document.location.href = '/';
+        if(userId != '')
+            document.location.href = `/profile/${userId}`;
         else
             axios.get(PATH).then(response => setData(response.data)).catch(error => console.error('Erro ao buscar dados:', error));
     }, []);
 
-    useEffect(() => {
-        console.log('Carregando Register.js -> Usuário Atual: ' + (CurrentUser.id ? CurrentUser.toString() : 'Vazio'));
-        return console.log('Fechando Register.js -> Usuário Atual: ' + (CurrentUser.id ? CurrentUser.toString() : 'Vazio'));
-      });
-
     return(
-        <> {data && !CurrentUser.id
+        <> {data && (userId === '')
             ? <>
                 <div className="w3-container w3-padding-64 w3-white w3-border w3-border-gray" id="register">
                     <h1 className="w3-center">{data.message}</h1>
