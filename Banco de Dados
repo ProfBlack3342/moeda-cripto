@@ -8,3 +8,11 @@ CREATE TABLE usuarios (
     cpf VARCHAR(14) NOT NULL UNIQUE,
     email VARCHAR (90) NOT NULL UNIQUE
 );
+
+CREATE TABLE mensagens (
+    id INT NOT NULL PRIMARY KEY,
+    nome VARCHAR(150) NOT NULL,
+    email VARCHAR (90) NOT NULL UNIQUE,
+    assunto VARCHAR(150) NOT NULL,
+    mensagem VARCHAR(500) NOT NULL
+);
