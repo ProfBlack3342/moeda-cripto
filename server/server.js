@@ -56,7 +56,7 @@ server.post(PATHS_API.register, (req, res) => {
     if(!login || !senha || !senhaC || !nome || !cpf || !email)
         return res.status(400).send(`<p>Preencha todos os campos!</p>`);
     else {
-        if(senha != senhaC)
+        if(senha !== senhaC)
             return res.status(400).send('A senha e a sua confirmação devem ter valores iguais!');
         else {
 
@@ -66,20 +66,19 @@ server.post(PATHS_API.register, (req, res) => {
 
                 bcrypt.hash(senha, BCRYPT_SALTROUNDS, (hashingErr, hash) => {
                     if(hashingErr instanceof Error)
-                        return res.status(500).send('Erro criando hash da senha.');
+                        return res.status(500).send('Erro criando hash da senha: \n' + hashingErr.message);
                     else {
                         db.execute('INSERT INTO `usuarios` (`login`, `senha`, `nome`, `cpf`, `email`) VALUES (?, ?, ?, ?, ?)', [login, hash, nome, cpf, email],
                             (insertErr, insertResults) => {
 
                                 if(insertErr instanceof Error)
-                                    return res.status(500).send('Erro ao registrar o usuário no banco de dados.');
+                                    return res.status(500).send('Erro ao registrar o usuário no banco de dados: \n' + insertErr.message);
                                 else {
 
                                     if(insertResults.affectedRows > 0)
                                         res.status(200).json({
                                             id: insertResults.insertId,
                                             login,
-                                            hash,
                                             nome,
                                             cpf,
                                             email
@@ -113,7 +112,7 @@ server.post(PATHS_API.login, (req, res) => {
             async (selectErr, selectResults) => {
 
                 if(selectErr instanceof Error)
-                    return res.status(500).send('Erro ao pesquisar o usuário no banco de dados.');
+                    return res.status(500).send('Erro ao pesquisar o usuário no banco de dados: \n' + selectErr.message);
                 else {
 
                     if(selectResults.length > 0) {
@@ -122,14 +121,13 @@ server.post(PATHS_API.login, (req, res) => {
 
                         bcrypt.compare(senha, hashBanco, (hashCompareErr, isMatch) => {
                             if(hashCompareErr instanceof Error) {
-                                return res.status(500).send('Erro durante a comparação de senha com hash');
+                                return res.status(500).send('Erro durante a comparação de senha com hash: \n' + hashCompareErr.message);
                             }
                             else {
                                 if(isMatch){
                                     res.status(200).json({
                                         id: selectResults[0].id,
                                         login: selectResults[0].login,
-                                        senha: hashBanco,
                                         nome: selectResults[0].nome,
                                         cpf: selectResults[0].cpf,
                                         email: selectResults[0].email
@@ -149,25 +147,28 @@ server.post(PATHS_API.login, (req, res) => {
 });
 
 // Perfil
-server.get(PATHS_API.profile, (req, res) => {
-
-    res.redirect(PATHS_API.home);
+server.get(PATHS_API.profile, (req, res, next) => {
+    console.log('Rota GET Incompleta de Perfil');
+    next();
 });
 server.get(PATHS_API.profile + '/:id', (req, res) => {
 
     const id = req.params.id;
-    const {login, senha, nome, cpf, email} = req.body;
 
-    if(!id || !login || !senha)
+    if(!id)
         return res.status(400).send('Informe o id na requisição e/ou preencha o login/senha!');
     else {
-        res.json({ message: 'Seu Perfil' });
+        res.status(200).send('Seu Perfil');
     }
+});
+server.post(PATHS_API.profile, (req, res, next) => {
+    console.log('Rota POST Incompleta de Perfil');
+    next();
 });
 server.post(PATHS_API.profile + '/:id', (req, res) => {
 
     const id = req.params.id;
-    const {login, senha, senhaNova, senhaNovaC, nome, cpf, email} = req.body;
+    const {nome, cpf, email, senhaNova, senhaNovaC, login, senha} = req.body;
 
     if(!id || !login || !senha)
         return res.status(400).send('Informe o id na requisição e/ou preencha o login/senha!');
@@ -182,9 +183,11 @@ server.post(PATHS_API.profile + '/:id', (req, res) => {
 
                     if(selectResults.length > 0) {
 
+                        const hashBanco = selectResults[0].senha;
+
                         bcrypt.compare(senha, hashBanco, (hashCompareErr, isMatch) => {
                             if(hashCompareErr instanceof Error) {
-                                return res.status(500).send('Erro durante a comparação de senha com hash');
+                                return res.status(500).send('Erro durante a comparação de senha com hash: \n' + hashCompareErr.message);
                             }
                             else {
                                 if(isMatch){
@@ -193,73 +196,56 @@ server.post(PATHS_API.profile + '/:id', (req, res) => {
                                     let statementArray = [];
                                     let change = false;
 
-                                    if(Object.hasOwn(req.body, 'chkSenhaNova')) {
-
-                                        if(!senhaNova || !senhaNovaC)
-                                            return res.status(400).send('Preencha ou desmarque o campo "Nova Senha"!');
+                                    if(senhaNova) {
+                                        if(senhaNova !== senhaNovaC)
+                                            return res.status(400).send('A senha nova e a sua confirmação devem ter valores iguais!');
                                         else {
+                                                change = true;
+                                                bcrypt.hash(senhaNova, BCRYPT_SALTROUNDS, (hashingErr, hash) => {
+                                                if(hashingErr instanceof Error)
+                                                    return res.status(500).send('Erro criando hash da senha: \n' + hashingErr.message);
+                                                else {
+                                                    statementArray.push(hash);
+                                                    statementQuery += '`senha` = ?';
+                                                }
+                                            });
 
-                                            if(senhaNova != senhaNovaC)
-                                                return res.status(400).send('A senha nova e a sua confirmação devem ter valores iguais!');
-                                            else {
-                                                bcrypt.hash(senha, BCRYPT_SALTROUNDS, (hashingErr, hash) => {
-                                                    if(hashingErr instanceof Error)
-                                                        return res.status(500).send('Erro criando hash da senha.');
-                                                    else {
-                                                        statementArray.push(hash);
-                                                        statementQuery += '`senha` = ? ';
-                                                        change = true;
-                                                    }
-                                                });
-                                            }
+                                            
                                         }
                                     }
-                                    if(Object.hasOwn(req.body, 'chkNome')) {
 
-                                        if(!nome)
-                                            return res.status(400).send('Preencha ou desmarque o campo "Nome"!');
+                                    if(nome) {
+                                        statementArray.push(nome);
+
+                                        if(change)
+                                            statementQuery += ', `nome` = ?';
                                         else {
-
-                                            statementArray.push(nome);
-
-                                            if(change)
-                                                statementQuery += ', `nome` = ? ';
-                                            else {
-                                                statementQuery += '`nome` = ? ';
-                                                change = true;
-                                            }
+                                            statementQuery += '`nome` = ?';
+                                            change = true;
                                         }
                                     }
-                                    if(Object.hasOwn(req.body, 'chkCpf')) {
 
-                                        if(!cpf)
-                                            return res.status(400).send('Preencha ou desmarque o campo "CPF"!');
+                                    if(cpf) {
+
+                                        statementArray.push(cpf);
+
+                                        if(change)
+                                            statementQuery += ', `cpf` = ?';
                                         else {
-
-                                            statementArray.push(cpf);
-
-                                            if(change)
-                                                statementQuery += ', `cpf` = ? ';
-                                            else {
-                                                statementQuery += '`cpf` = ? ';
-                                                change = true;
-                                            }
+                                            statementQuery += '`cpf` = ?';
+                                            change = true;
                                         }
                                     }
-                                    if(Object.hasOwn(req.body, 'chkEmail')) {
 
-                                        if(!email)
-                                            return res.status(400).send('Preencha ou desmarque o campo "Email"!');
+                                    if(email) {
+
+                                        statementArray.push(email);
+
+                                        if(change)
+                                            statementQuery += ', `email` = ?';
                                         else {
-
-                                            statementArray.push(email);
-
-                                            if(change)
-                                                statementQuery += ', `email` = ? ';
-                                            else {
-                                                statementQuery += '`email` = ? ';
-                                                change = true;
-                                            }
+                                            statementQuery += '`email` = ?';
+                                            change = true;
                                         }
                                     }
                                     
@@ -269,25 +255,21 @@ server.post(PATHS_API.profile + '/:id', (req, res) => {
                                         return res.status(400).send('Nenhum dado foi alterado!');
                                     else {
 
-                                        statementQuery += 'WHERE `id` = ?';
                                         statementArray.push(id);
+                                        statementQuery += ' WHERE `id` = ?';
+
+                                        console.log('statementQuery: ' + statementQuery);
+                                        console.log('statementArray: ' + statementArray);
 
                                         db.execute(statementQuery, statementArray,
                                             (updateErr, updateResults) => {
 
                                                 if(updateErr instanceof Error)
-                                                    return res.status(500).send('Erro ao registrar o usuário no banco de dados.');
+                                                    return res.status(500).send('Erro ao registrar o usuário no banco de dados: \n' + updateErr.message);
                                                 else {
 
                                                     if(updateResults.affectedRows > 0)
-                                                        res.status(200).json({
-                                                            id,
-                                                            login,
-                                                            senha: updateResults[0].senha,
-                                                            nome,
-                                                            cpf,
-                                                            email
-                                                        });
+                                                        res.status(200).json('Usuário atualizado');
                                                     else 
                                                         return res.status(500).send('Erro no banco de dados.');
                                                 }
