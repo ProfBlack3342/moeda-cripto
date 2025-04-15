@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import UseCookie from './components/ReactCookies';
-
 import HomePage from './components/pages/Home';
 import RegisterPage from './components/pages/Register';
 import LoginPage from './components/pages/Login';
 import ProfilePage from './components/pages/Profile';
 import ContactPage from './components/pages/Contact';
+
+import UseCookie from './components/ReactCookies';
 
 const PORT = 5000;
 const PATHS = {
@@ -27,16 +27,22 @@ const PATHS = {
  * @since 1.0
  * @version 1.0
  */
-function TopoHTML({userId, funcDeleteId, funcDeleteLogin, funcDeleteHash, funcDeleteNome, funcDeleteCpf, funcDeleteEmail}) {
+function TopoHTML() {
+
+  const [idUsuario, setIdUsuario, deleteIdUsuario] = UseCookie("user.id");
+  const [loginUsuario, setLoginUsuario, deleteLoginUsuario] = UseCookie("user.login");
+  const [nomeUsuario, setNomeUsuario, deleteNomeUsuario] = UseCookie("user.nome");
+  const [cpfUsuario, setCpfUsuario, deleteCpfUsuario] = UseCookie("user.cpf");
+  const [emailUsuario, setEmailUsuario, deleteEmailUsuario] = UseCookie("user.email");
+
+  console.log(`TopoHTML/App.js -> ID: ${idUsuario}`);
 
   const fazerLogoff = () => {
-    funcDeleteLogin();
-    funcDeleteHash();
-    funcDeleteNome();
-    funcDeleteCpf();
-    funcDeleteEmail();
-
-    funcDeleteId();
+    deleteLoginUsuario();
+    deleteNomeUsuario();
+    deleteCpfUsuario();
+    deleteEmailUsuario();
+    deleteIdUsuario();
   };
 
   return(
@@ -48,8 +54,8 @@ function TopoHTML({userId, funcDeleteId, funcDeleteLogin, funcDeleteHash, funcDe
           </a>
           <div className="w3-right w3-hide-small">
             <a href={PATHS.home} className="w3-bar-item w3-button">Home</a>
-            {userId != ''
-              ? <><a href={PATHS.profile} className="w3-bar-item w3-button">Seu Perfil</a><a href={PATHS.home} className="w3-bar-item w3-button" onClick={fazerLogoff}>Sair do Usuário</a></>
+            {idUsuario !== ''
+              ? <><a href={PATHS.profile + `/?id=${idUsuario}`} className="w3-bar-item w3-button">Seu Perfil</a><a href={PATHS.home} className="w3-bar-item w3-button" onClick={fazerLogoff}>Sair do Usuário</a></>
               : <><a href={PATHS.register} className="w3-bar-item w3-button">Criar Conta</a><a href={PATHS.login} className="w3-bar-item w3-button">Fazer Login</a></>
             }
             <a href={PATHS.contact} className="w3-bar-item w3-button">Contato</a>
@@ -75,7 +81,15 @@ function TopoHTML({userId, funcDeleteId, funcDeleteLogin, funcDeleteHash, funcDe
  * @since 1.0
  * @version 1.0
  */
-function ConteudoHTML({userId, funcChangeId, funcChangeLogin, funcChangeHash, funcChangeNome, funcChangeCpf, funcChangeEmail}) {
+function ConteudoHTML() {
+
+  const [idUsuario, setIdUsuario, deleteIdUsuario] = UseCookie("user.id");
+  const [loginUsuario, setLoginUsuario, deleteLoginUsuario] = UseCookie("user.login");
+  const [nomeUsuario, setNomeUsuario, deleteNomeUsuario] = UseCookie("user.nome");
+  const [cpfUsuario, setCpfUsuario, deleteCpfUsuario] = UseCookie("user.cpf");
+  const [emailUsuario, setEmailUsuario, deleteEmailUsuario] = UseCookie("user.email");
+
+  console.log(`ConteudoHTML/App.js -> ID: ${idUsuario}; Login: ${loginUsuario}; Nome: ${nomeUsuario}; CPF: ${cpfUsuario}; Email: ${emailUsuario}`);
 
   return(
     <div className="w3-content" style={{'maxWidth':'1100px'}}>
@@ -88,37 +102,16 @@ function ConteudoHTML({userId, funcChangeId, funcChangeLogin, funcChangeHash, fu
         <Route path={PATHS.register} element={
           <RegisterPage
             port={PORT}
-            userId={userId}
-            funcChangeId={funcChangeId}
-            funcChangeLogin={funcChangeLogin}
-            funcChangeHash={funcChangeHash}
-            funcChangeNome={funcChangeNome}
-            funcChangeCpf={funcChangeCpf}
-            funcChangeEmail={funcChangeEmail}
           />}
         />
         <Route path={PATHS.login} element={
           <LoginPage
             port={PORT}
-            userId={userId}
-            funcChangeId={funcChangeId}
-            funcChangeLogin={funcChangeLogin}
-            funcChangeHash={funcChangeHash}
-            funcChangeNome={funcChangeNome}
-            funcChangeCpf={funcChangeCpf}
-            funcChangeEmail={funcChangeEmail}
           />}
         />
         <Route path={PATHS.profile} element={
           <ProfilePage
             port={PORT}
-            userId={userId}
-            funcChangeId={funcChangeId}
-            funcChangeLogin={funcChangeLogin}
-            funcChangeHash={funcChangeHash}
-            funcChangeNome={funcChangeNome}
-            funcChangeCpf={funcChangeCpf}
-            funcChangeEmail={funcChangeEmail}
           />}
         />
         <Route path={PATHS.contact} element={
@@ -201,40 +194,21 @@ function App() {
 
   const [idUsuario, setIdUsuario, deleteIdUsuario] = UseCookie("user.id");
   const [loginUsuario, setLoginUsuario, deleteLoginUsuario] = UseCookie("user.login");
-  const [hashUsuario, setHashUsuario, deleteHashUsuario] = UseCookie("user.hash");
   const [nomeUsuario, setNomeUsuario, deleteNomeUsuario] = UseCookie("user.nome");
   const [cpfUsuario, setCpfUsuario, deleteCpfUsuario] = UseCookie("user.cpf");
-  const [emailUsuario, setEmailUsuario, deleteEmailUsuario] = UseCookie("user.email");
+  const [emailUsuario, setEmailUsuario, deleteEmailUsuario] = UseCookie("user.email");  
 
-  useEffect(() => {
-    console.log(`ID: ${idUsuario}; Login: ${loginUsuario}; Hash: ${hashUsuario}; Nome: ${nomeUsuario}; CPF: ${cpfUsuario}; Email: ${emailUsuario}`)
-}, []);
+  console.log(`App/App.js -> ID: ${idUsuario}; Login: ${loginUsuario}; Nome: ${nomeUsuario}; CPF: ${cpfUsuario}; Email: ${emailUsuario}`);
 
   return (
     <Router>
 
       <div className='w3-black w3-padding-64'>
-        <TopoHTML
-          userId={idUsuario}
-          funcDeleteId={deleteIdUsuario}
-          funcDeleteLogin={deleteLoginUsuario}
-          funcDeleteHash={deleteHashUsuario}
-          funcDeleteNome={deleteNomeUsuario}
-          funcDeleteCpf={deleteCpfUsuario}
-          funcDeleteEmail={deleteEmailUsuario}
-        />
+        <TopoHTML/>
       </div>
         
       <div className='w3-light-gray w3-topbar w3-bottombar w3-padding-64'>
-        <ConteudoHTML
-          userId={idUsuario}
-          funcChangeId={setIdUsuario}
-          funcChangeLogin={setLoginUsuario}
-          funcChangeHash={setHashUsuario}
-          funcChangeNome={setNomeUsuario}
-          funcChangeCpf={setCpfUsuario}
-          funcChangeEmail={setEmailUsuario}
-        />
+        <ConteudoHTML/>
       </div>
 
       <div>
