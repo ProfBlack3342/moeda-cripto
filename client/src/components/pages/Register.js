@@ -12,7 +12,13 @@ import UseCookie from '../ReactCookies';
  * @since 1.0
  * @version 1.0
  */
-function RegisterPage({port, userId, funcChangeId, funcChangeLogin, funcChangeHash, funcChangeNome, funcChangeCpf, funcChangeEmail}) {
+function RegisterPage({port}) {
+
+    const [idUsuario, setIdUsuario, deleteIdUsuario] = UseCookie("user.id");
+    const [loginUsuario, setLoginUsuario, deleteLoginUsuario] = UseCookie("user.login");
+    const [nomeUsuario, setNomeUsuario, deleteNomeUsuario] = UseCookie("user.nome");
+    const [cpfUsuario, setCpfUsuario, deleteCpfUsuario] = UseCookie("user.cpf");
+    const [emailUsuario, setEmailUsuario, deleteEmailUsuario] = UseCookie("user.email");
 
     const PATH = `http://localhost:${port}/api/register`;
     const [data, setData] = useState(null);
@@ -37,15 +43,14 @@ function RegisterPage({port, userId, funcChangeId, funcChangeLogin, funcChangeHa
 
             const response = await axios.post(PATH, formData);
             
-            funcChangeId(response.data.id);
-            funcChangeLogin(response.data.login);
-            funcChangeHash(response.data.hash);
-            funcChangeNome(response.data.nome);
-            funcChangeCpf(response.data.cpf);
-            funcChangeEmail(response.data.email);
+            setLoginUsuario(response.data.login);
+            setNomeUsuario(response.data.nome);
+            setCpfUsuario(response.data.cpf);
+            setEmailUsuario(response.data.email);
+            setIdUsuario(response.data.id);
 
-            window.alert('Cadastro feito com sucesso!');
-            document.location.href = `/profile/${userId}`;
+            window.alert('Cadastro feito com sucesso, redirecionando para o seu perfil!');
+            document.location.href = '/profile/?id=${idUsuario}';
             
         } catch (error) {
             if(error.response) {
@@ -67,14 +72,19 @@ function RegisterPage({port, userId, funcChangeId, funcChangeLogin, funcChangeHa
 
     useEffect(() => {
         // Requisição para a API do backend
-        if(userId != '')
-            document.location.href = `/profile/${userId}`;
-        else
+        if(idUsuario !== '') {
+            // window.alert('Usuário já logado, redirecionando para o perfil');
+            document.location.href = `/profile/?id=${idUsuario}`;
+        }
+        else {
+            // window.alert('Usuário não logado, carregando a página de cadastro');
             axios.get(PATH).then(response => setData(response.data)).catch(error => console.error('Erro ao buscar dados:', error));
+        }
+        // eslint-disable-next-line
     }, []);
 
     return(
-        <> {data && (userId === '')
+        <> {data && (idUsuario === '')
             ? <>
                 <div className="w3-container w3-padding-64 w3-white w3-border w3-border-gray" id="register">
                     <h1 className="w3-center">{data.message}</h1>
