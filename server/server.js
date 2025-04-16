@@ -97,7 +97,6 @@ server.post(PATHS_API.register, (req, res) => {
 
 // Login
 server.get(PATHS_API.login, (req, res) => {
-
     res.json({ message: 'Página de Login' });
 });
 server.post(PATHS_API.login, (req, res) => {
@@ -158,7 +157,7 @@ server.get(PATHS_API.profile + '/:id', (req, res) => {
     if(!id)
         return res.status(400).send('Informe o id na requisição e/ou preencha o login/senha!');
     else
-        res.status(200).send('Seu Perfil');
+        res.status(200).json({ message: 'Seu Perfil' });
 });
 server.post(PATHS_API.profile, (req, res, next) => {
     console.log('Rota POST Incompleta de Perfil');
