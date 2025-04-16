@@ -157,9 +157,8 @@ server.get(PATHS_API.profile + '/:id', (req, res) => {
 
     if(!id)
         return res.status(400).send('Informe o id na requisição e/ou preencha o login/senha!');
-    else {
+    else
         res.status(200).send('Seu Perfil');
-    }
 });
 server.post(PATHS_API.profile, (req, res, next) => {
     console.log('Rota POST Incompleta de Perfil');
@@ -200,17 +199,14 @@ server.post(PATHS_API.profile + '/:id', (req, res) => {
                                         if(senhaNova !== senhaNovaC)
                                             return res.status(400).send('A senha nova e a sua confirmação devem ter valores iguais!');
                                         else {
-                                                change = true;
-                                                bcrypt.hash(senhaNova, BCRYPT_SALTROUNDS, (hashingErr, hash) => {
-                                                if(hashingErr instanceof Error)
-                                                    return res.status(500).send('Erro criando hash da senha: \n' + hashingErr.message);
-                                                else {
-                                                    statementArray.push(hash);
-                                                    statementQuery += '`senha` = ?';
-                                                }
-                                            });
-
-                                            
+                                            change = true;
+                                            const hash = bcrypt.hashSync(senhaNova, BCRYPT_SALTROUNDS);
+                                            if(hash instanceof Error)
+                                                 return res.status(500).send('Erro criando hash da senha: \n' + hashingErr.message);
+                                            else {
+                                                statementArray.push(hash);
+                                                statementQuery += '`senha` = ?';
+                                            }
                                         }
                                     }
 
