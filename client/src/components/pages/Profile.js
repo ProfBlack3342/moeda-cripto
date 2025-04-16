@@ -14,10 +14,15 @@ import UseCookie from '../ReactCookies';
  */
 function ProfilePage({port}) {
 
+    // eslint-disable-next-line
     const [idUsuario, setIdUsuario, deleteIdUsuario] = UseCookie("user.id");
+    // eslint-disable-next-line
     const [loginUsuario, setLoginUsuario, deleteLoginUsuario] = UseCookie("user.login");
+    // eslint-disable-next-line
     const [nomeUsuario, setNomeUsuario, deleteNomeUsuario] = UseCookie("user.nome");
+    // eslint-disable-next-line
     const [cpfUsuario, setCpfUsuario, deleteCpfUsuario] = UseCookie("user.cpf");
+    // eslint-disable-next-line
     const [emailUsuario, setEmailUsuario, deleteEmailUsuario] = UseCookie("user.email");
 
     console.log(`ProfilePage/Profile.js -> ID: ${idUsuario}; Login: ${loginUsuario}; Nome: ${nomeUsuario}; CPF: ${cpfUsuario}; Email: ${emailUsuario}`);
