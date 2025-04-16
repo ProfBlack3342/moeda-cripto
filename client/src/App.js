@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import HomePage from './components/pages/Home';
@@ -29,10 +29,15 @@ const PATHS = {
  */
 function TopoHTML() {
 
+  // eslint-disable-next-line
   const [idUsuario, setIdUsuario, deleteIdUsuario] = UseCookie("user.id");
+  // eslint-disable-next-line
   const [loginUsuario, setLoginUsuario, deleteLoginUsuario] = UseCookie("user.login");
+  // eslint-disable-next-line
   const [nomeUsuario, setNomeUsuario, deleteNomeUsuario] = UseCookie("user.nome");
+  // eslint-disable-next-line
   const [cpfUsuario, setCpfUsuario, deleteCpfUsuario] = UseCookie("user.cpf");
+  // eslint-disable-next-line
   const [emailUsuario, setEmailUsuario, deleteEmailUsuario] = UseCookie("user.email");
 
   console.log(`TopoHTML/App.js -> ID: ${idUsuario}`);
@@ -45,6 +50,37 @@ function TopoHTML() {
     deleteIdUsuario();
   };
 
+  const menuHamburger = (evt) => {
+    evt.preventDefault();
+
+    var x = document.getElementById("mobileLinks");
+    if (x.style.display === "block") {
+      x.style.display = "none";
+    } else {
+      x.style.display = "block";
+    };
+  }
+
+  const pcUserButtons = () => {
+    return (idUsuario !== '')
+    ? (<><a href={PATHS.profile + `/?id=${idUsuario}`} className="w3-bar-item w3-button w3-hide-small w3-hide-medium">Seu Perfil</a><a href={PATHS.home} className="w3-bar-item w3-button w3-hide-small w3-hide-medium" onClick={fazerLogoff}>Sair do Usuário</a></>)
+    : (<><a href={PATHS.register} className="w3-bar-item w3-button w3-hide-small w3-hide-medium">Criar Conta</a><a href={PATHS.login} className="w3-bar-item w3-button w3-hide-small w3-hide-medium">Fazer Login</a></>)
+  };
+
+  const pcContactButton = () => {
+    return (<a href={PATHS.contact} className="w3-bar-item w3-button w3-hide-small w3-hide-medium">Contato</a>)
+  };
+
+  const mobileUserButtons = () => {
+    return (idUsuario !== '')
+    ? (<><a href={PATHS.profile + `/?id=${idUsuario}`} className="w3-bar-item w3-button w3-mobile">Seu Perfil</a><a href={PATHS.home} className="w3-bar-item w3-button w3-mobile" onClick={fazerLogoff}>Sair do Usuário</a></>)
+    : (<><a href={PATHS.register} className="w3-bar-item w3-button w3-mobile">Criar Conta</a><a href={PATHS.login} className="w3-bar-item w3-button w3-mobile">Fazer Login</a></>)
+  }
+
+  const mobileContactButton = () => {
+    return (<a href={PATHS.contact} className="w3-bar-item w3-button w3-mobile">Contato</a>)
+  };
+
   return(
     <>
       <div className="w3-top">
@@ -52,16 +88,24 @@ function TopoHTML() {
           <a href="/" className="w3-bar-item w3-button">
             <img src={require('./imgs/Bitcoin_logo.png')} className="w3-image" alt="Moeda Cripto" width="140" height="30"/>
           </a>
-          <div className="w3-right w3-hide-small">
-            <a href={PATHS.home} className="w3-bar-item w3-button">Home</a>
-            {idUsuario !== ''
-              ? <><a href={PATHS.profile + `/?id=${idUsuario}`} className="w3-bar-item w3-button">Seu Perfil</a><a href={PATHS.home} className="w3-bar-item w3-button" onClick={fazerLogoff}>Sair do Usuário</a></>
-              : <><a href={PATHS.register} className="w3-bar-item w3-button">Criar Conta</a><a href={PATHS.login} className="w3-bar-item w3-button">Fazer Login</a></>
-            }
-            <a href={PATHS.contact} className="w3-bar-item w3-button">Contato</a>
+          <div className="w3-right">
+            <a href={PATHS.home} className="w3-bar-item w3-button w3-hide-small w3-hide-medium w3-mobile">Home</a>
+            {pcUserButtons()}
+            {pcContactButton()}
+            <a href='/#' className="icon w3-bar-item w3-button w3-mobile w3-hide-large" onClick={menuHamburger}>
+              <i className="fa fa-bars"/>
+            </a>
           </div>
         </div>
+        
       </div>
+      <div id="mobileLinks" className='w3-dark-gray w3-padding w3-card w3-center' style={{'display' : 'none', 'letterSpacing':'4px'}}>
+          <div className='w3-center'>
+          {mobileUserButtons()}
+          {mobileContactButton()}
+          </div>
+        </div>
+      
 
       <header className="w3-display-container w3-content w3-wide" style={{'maxWidth':'700px', 'minWidth':'500px'}} id="home">
         <img className="w3-image w3-round" src={require('./imgs/Bitcoin-Genesis-block.jpg')} alt="bloco genesis bitcoin" width="1600" height="800"/>
@@ -83,10 +127,15 @@ function TopoHTML() {
  */
 function ConteudoHTML() {
 
+  // eslint-disable-next-line
   const [idUsuario, setIdUsuario, deleteIdUsuario] = UseCookie("user.id");
+  // eslint-disable-next-line
   const [loginUsuario, setLoginUsuario, deleteLoginUsuario] = UseCookie("user.login");
+  // eslint-disable-next-line
   const [nomeUsuario, setNomeUsuario, deleteNomeUsuario] = UseCookie("user.nome");
+  // eslint-disable-next-line
   const [cpfUsuario, setCpfUsuario, deleteCpfUsuario] = UseCookie("user.cpf");
+  // eslint-disable-next-line
   const [emailUsuario, setEmailUsuario, deleteEmailUsuario] = UseCookie("user.email");
 
   console.log(`ConteudoHTML/App.js -> ID: ${idUsuario}; Login: ${loginUsuario}; Nome: ${nomeUsuario}; CPF: ${cpfUsuario}; Email: ${emailUsuario}`);
@@ -192,10 +241,15 @@ function FooterHTML() {
  */
 function App() {
 
+  // eslint-disable-next-line
   const [idUsuario, setIdUsuario, deleteIdUsuario] = UseCookie("user.id");
+  // eslint-disable-next-line
   const [loginUsuario, setLoginUsuario, deleteLoginUsuario] = UseCookie("user.login");
+  // eslint-disable-next-line
   const [nomeUsuario, setNomeUsuario, deleteNomeUsuario] = UseCookie("user.nome");
+  // eslint-disable-next-line
   const [cpfUsuario, setCpfUsuario, deleteCpfUsuario] = UseCookie("user.cpf");
+  // eslint-disable-next-line
   const [emailUsuario, setEmailUsuario, deleteEmailUsuario] = UseCookie("user.email");  
 
   console.log(`App/App.js -> ID: ${idUsuario}; Login: ${loginUsuario}; Nome: ${nomeUsuario}; CPF: ${cpfUsuario}; Email: ${emailUsuario}`);
