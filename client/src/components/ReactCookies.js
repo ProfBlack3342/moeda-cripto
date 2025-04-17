@@ -15,6 +15,8 @@ function UseCookie(cookieName) {
 
     useEffect(() => {
       setCookieValue(getDocumentCookie());
+      
+      // eslint-disable-next-line
     }, [cookieName]);
 
     const setCookie = (value) => {
