@@ -1,5 +1,7 @@
 CREATE DATABASE moeda_cripto;
 
+USE moeda_cripto;
+
 CREATE TABLE tiposUsuario (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(90) NOT NULL UNIQUE
