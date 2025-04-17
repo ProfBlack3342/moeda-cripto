@@ -13,11 +13,16 @@ import UseCookie from '../ReactCookies';
  * @version 1.0
  */
 function LoginPage({port}) {
-    
+
+    // eslint-disable-next-line
     const [idUsuario, setIdUsuario, deleteIdUsuario] = UseCookie("user.id");
+    // eslint-disable-next-line
     const [loginUsuario, setLoginUsuario, deleteLoginUsuario] = UseCookie("user.login");
+    // eslint-disable-next-line
     const [nomeUsuario, setNomeUsuario, deleteNomeUsuario] = UseCookie("user.nome");
+    // eslint-disable-next-line
     const [cpfUsuario, setCpfUsuario, deleteCpfUsuario] = UseCookie("user.cpf");
+    // eslint-disable-next-line
     const [emailUsuario, setEmailUsuario, deleteEmailUsuario] = UseCookie("user.email");
 
     const PATH = `http://localhost:${port}/api/login`;
